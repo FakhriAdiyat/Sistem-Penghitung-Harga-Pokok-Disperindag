@@ -1,0 +1,284 @@
+:root {
+  --primary: #020330;
+  --bg: #ffffff;
+}
+
+/* ================= RESET ================= */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #ffffff;
+}
+
+/* ================= LAYOUT ================= */
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar {
+  width: 260px;
+  background: #3388bb;
+  padding: 25px 20px;
+}
+
+.sidebar-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #ffffff;
+  border-bottom: 3px solid #ffffff;
+  padding-bottom: 5px;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-menu li {
+  margin-bottom: 18px;
+}
+
+.sidebar-menu a {
+  font-size: 20px;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.sidebar-menu a:hover {
+  text-decoration: underline;
+}
+
+.sidebar-menu a::after {
+  content: "";
+  display: block;
+  padding-bottom: 0.5rem;
+}
+
+/* ================= HEADER ================= */
+.header {
+  background: #000000;
+  color: #ffffff;
+  padding: 15px 25px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* ================= CONTENT ================= */
+.content {
+  flex: 1;
+  padding: 30px;
+  background: #ffffff;
+}
+
+.content h1 {
+  margin-top: 0;
+  font-size: 32px;
+}
+
+.subtitle {
+  font-size: 20px;
+  margin-bottom: 30px;
+}
+
+/* ================= DASHBOARD CARD ================= */
+.statistik {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  width: 180px;
+  background: #e0e0e0;
+  padding: 15px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.stat-card h2 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.stat-card p {
+  margin: 5px 0 0;
+  font-size: 16px;
+}
+
+/* ================= INFO CARD ================= */
+.card {
+  width: 180px;
+  background: #e0e0e0;
+  padding: 15px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.card p {
+  margin-top: 5px;
+  font-size: 15px;
+}
+
+/* ================= GARIS PEMBATAS ================= */
+.divider {
+  border-top: 3px solid #000;
+  margin: 30px 0;
+}
+
+/* ================= CHART ================= */
+.chart-container {
+  display: flex;
+  gap: 40px;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.chart-box {
+  width: 30%;
+  text-align: center;
+}
+
+.chart-box h3 {
+  margin-top: 15px;
+  font-size: 18px;
+}
+
+canvas {
+  max-width: 100%;
+}
+
+/* ================= LIST DATA ================= */
+.search-box {
+  width: 70%;
+  background: #e0e0e0;
+  padding: 12px 15px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 2px solid #000;
+  font-size: 20px;
+}
+
+.btn-view {
+  background: #0070c0;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* ================= DETAIL BOX ================= */
+.detail-box {
+  background: #e0e0e0;
+  padding: 20px;
+  border-radius: 15px;
+  margin: 15px 0;
+}
+
+.detail-box p {
+  margin: 6px 0;
+}
+
+/* ================= BUTTON ================= */
+.btn-edit {
+  background: #ffc107;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.btn-delete {
+  background: #ff3b3b;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* ================= FORM ================= */
+.form-box {
+  width: 380px;
+  background: #e0e0e0;
+  padding: 25px;
+  border-radius: 20px;
+}
+
+.form-box label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.form-box input,
+.form-box select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  margin-top: 5px;
+}
+
+.btn-save {
+  margin-top: 15px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  margin-top: 15px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  background: #bdbdbd;
+  cursor: pointer;
+}
+
+/* ================= MODAL LOGOUT ================= */
+.modal {
+  width: 400px;
+  background: white;
+  border-radius: 15px;
+  border: 10px solid #b7e35a;
+  padding: 25px;
+  text-align: center;
+  margin: 100px auto;
+}
+
+.modal h2 {
+  margin-top: 0;
+}
+
+.btn-logout {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 10px;
+  cursor: pointer;
+}
