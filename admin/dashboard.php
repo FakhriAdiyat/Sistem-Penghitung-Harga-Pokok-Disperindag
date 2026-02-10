@@ -50,7 +50,7 @@ $stabil = $status['stabil'] ?? 0;
 <html>
 <head>
     <title>Dashboard Admin</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <!-- <link rel="stylesheet" href="../assets/css/style.css"> -->
 </head>
 <body>
 

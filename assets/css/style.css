@@ -1,6 +1,9 @@
 :root {
   --primary: #020330;
+  --sidebar: #3388bb;
+  --dark: #000000;
   --bg: #ffffff;
+  --soft: #e0e0e0;
 }
 
 /* ================= RESET ================= */
@@ -11,7 +14,7 @@
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-  background: #ffffff;
+  background: var(--bg);
 }
 
 /* ================= LAYOUT ================= */
@@ -23,8 +26,12 @@ body {
 /* ================= SIDEBAR ================= */
 .sidebar {
   width: 260px;
-  background: #3388bb;
+  background: var(--sidebar);
   padding: 25px 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
 }
 
 .sidebar-title {
@@ -56,26 +63,22 @@ body {
   text-decoration: underline;
 }
 
-.sidebar-menu a::after {
-  content: "";
-  display: block;
-  padding-bottom: 0.5rem;
-}
-
 /* ================= HEADER ================= */
 .header {
-  background: #000000;
+  background: var(--dark);
   color: #ffffff;
   padding: 15px 25px;
   font-size: 28px;
   font-weight: bold;
+  margin-left: 260px;
 }
 
 /* ================= CONTENT ================= */
 .content {
-  flex: 1;
+  margin-left: 260px;
   padding: 30px;
   background: #ffffff;
+  flex: 1;
 }
 
 .content h1 {
@@ -88,117 +91,115 @@ body {
   margin-bottom: 30px;
 }
 
-/* ================= DASHBOARD CARD ================= */
-.statistik {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin-bottom: 30px;
-}
-
-.stat-card {
-  width: 180px;
-  background: #e0e0e0;
-  padding: 15px;
-  border-radius: 12px;
-  text-align: center;
-}
-
-.stat-card h2 {
-  margin: 0;
-  font-size: 26px;
-}
-
-.stat-card p {
-  margin: 5px 0 0;
-  font-size: 16px;
-}
-
-/* ================= INFO CARD ================= */
-.card {
-  width: 180px;
-  background: #e0e0e0;
-  padding: 15px;
-  border-radius: 12px;
-  text-align: center;
-}
-
-.card h2 {
-  margin: 0;
-  font-size: 22px;
-}
-
-.card p {
-  margin-top: 5px;
-  font-size: 15px;
-}
-
-/* ================= GARIS PEMBATAS ================= */
+/* ================= DIVIDER ================= */
 .divider {
   border-top: 3px solid #000;
-  margin: 30px 0;
+  margin: 35px 0;
 }
 
-/* ================= CHART ================= */
-.chart-container {
-  display: flex;
-  gap: 40px;
-  justify-content: space-between;
+/* ================= MEMBER PAGE ================= */
+.member-container {
+  background: #ffffff;
+}
+
+/* ===== FORM MEMBER ===== */
+.form-box {
+  width: 420px;
+  background: var(--soft);
+  padding: 25px;
+  border-radius: 20px;
   margin-top: 20px;
 }
 
-.chart-box {
-  width: 30%;
-  text-align: center;
+.form-box h3 {
+  margin-top: 0;
 }
 
-.chart-box h3 {
+.form-group {
   margin-top: 15px;
-  font-size: 18px;
 }
 
-canvas {
-  max-width: 100%;
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 6px;
 }
 
-/* ================= LIST DATA ================= */
-.search-box {
-  width: 70%;
-  background: #e0e0e0;
-  padding: 12px 15px;
-  border-radius: 12px;
-  margin-bottom: 20px;
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
 }
 
-.list-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 0;
-  border-bottom: 2px solid #000;
-  font-size: 20px;
-}
-
-.btn-view {
-  background: #0070c0;
+.btn-save {
+  margin-top: 20px;
+  width: 100%;
+  background: #4caf50;
   color: white;
   border: none;
-  padding: 8px 18px;
-  border-radius: 10px;
+  padding: 12px;
+  border-radius: 12px;
   font-size: 16px;
   cursor: pointer;
 }
 
-/* ================= DETAIL BOX ================= */
-.detail-box {
-  background: #e0e0e0;
-  padding: 20px;
-  border-radius: 15px;
-  margin: 15px 0;
+.btn-save:hover {
+  background: #3f9142;
 }
 
-.detail-box p {
-  margin: 6px 0;
+/* ================= TABLE MEMBER ================= */
+.member-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.member-table th {
+  background: #1e293b;
+  color: #ffffff;
+  padding: 12px;
+  font-size: 15px;
+  text-align: left;
+}
+
+.member-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+.member-table tr:last-child td {
+  border-bottom: none;
+}
+
+.member-table tr:hover {
+  background: #f1f5f9;
+}
+
+/* ================= ROLE BADGE ================= */
+.role-admin {
+  background: #dc2626;
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.role-member {
+  background: #2563eb;
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 /* ================= BUTTON ================= */
@@ -219,47 +220,7 @@ canvas {
   cursor: pointer;
 }
 
-/* ================= FORM ================= */
-.form-box {
-  width: 380px;
-  background: #e0e0e0;
-  padding: 25px;
-  border-radius: 20px;
-}
-
-.form-box label {
-  display: block;
-  margin-top: 10px;
-  font-weight: bold;
-}
-
-.form-box input,
-.form-box select {
-  width: 100%;
-  padding: 8px;
-  border-radius: 8px;
-  border: none;
-  margin-top: 5px;
-}
-
-.btn-save {
-  margin-top: 15px;
-  padding: 10px 20px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-}
-
-.btn-cancel {
-  margin-top: 15px;
-  padding: 10px 20px;
-  border-radius: 10px;
-  border: none;
-  background: #bdbdbd;
-  cursor: pointer;
-}
-
-/* ================= MODAL LOGOUT ================= */
+/* ================= MODAL ================= */
 .modal {
   width: 400px;
   background: white;
