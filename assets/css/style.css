@@ -178,6 +178,43 @@ body {
   text-decoration: underline;
 }
 
+/* ================= TOGGLE SIDEBAR ================= */
+
+.toggle-btn {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+  margin-right: 15px;
+}
+
+.sidebar {
+  transition: 0.3s ease;
+}
+
+.content {
+  transition: 0.3s ease;
+}
+
+.header {
+  transition: 0.3s ease;
+}
+
+/* Sidebar disembunyikan */
+.sidebar.collapsed {
+  transform: translateX(-100%);
+}
+
+/* Content full width */
+.content.full {
+  margin-left: 0;
+}
+
+.header.full {
+  margin-left: 0;
+}
+
 /* ================= HEADER ================= */
 .header {
   background: var(--dark);
@@ -232,12 +269,11 @@ body {
 /* ================= CONTAINER ================= */
 .container {
   background: #ffffff;
-  margin: 0.5cm;   /* jarak keliling dari content */
-  padding: 20px;   /* jarak isi ke dalam container */
+  margin: 0.5cm; /* jarak keliling dari content */
+  padding: 20px; /* jarak isi ke dalam container */
   border-radius: 15px; /* optional biar lebih rapi */
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* optional biar ada efek box */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* optional biar ada efek box */
 }
-
 
 /* ===== FORM MEMBER ===== */
 .form-box {

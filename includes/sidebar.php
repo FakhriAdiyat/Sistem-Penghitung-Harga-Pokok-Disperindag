@@ -1,6 +1,6 @@
 <div class="sidebar">
 
-    <div class="sidebar-title">Disperindag</div>
+    <!-- <div class="sidebar-title">Disperindag</div> -->
 
     <ul class="sidebar-menu">
 

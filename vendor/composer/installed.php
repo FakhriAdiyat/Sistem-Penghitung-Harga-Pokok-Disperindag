@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'pongo/monitoring-harga-bapok',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => 'f2559ff7022ad16de12190ce7e35c3fdd88a953a',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -56,9 +56,9 @@
             'dev_requirement' => false,
         ),
         'pongo/monitoring-harga-bapok' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => 'f2559ff7022ad16de12190ce7e35c3fdd88a953a',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
