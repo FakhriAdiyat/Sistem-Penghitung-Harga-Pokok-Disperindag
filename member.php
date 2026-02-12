@@ -20,7 +20,7 @@ $q_member = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
 
         <!-- CONTENT (INI HTML KAMU ASLI) -->
         <div class="content">
-            <div class="member-container">
+            <div class="container">
 
                 <h1>Manajemen Member</h1>
                 <p class="subtitle">Kelola akun member sistem</p>

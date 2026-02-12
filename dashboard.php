@@ -35,48 +35,83 @@ if ($_SESSION['role'] === 'admin') {
 <?php require_once 'includes/sidebar.php'; ?>
 
 <div class="content">
+    <div class="container">
+        <h1>Dashboard</h1>
+        <p class="subtitle">
+            Selamat datang, <?= $_SESSION['username']; ?>
+        </p>
 
-    <h1>Dashboard</h1>
-    <p class="subtitle">
-        Selamat datang, <?= $_SESSION['username']; ?>
-    </p>
+        <?php if ($_SESSION['role'] === 'admin') { ?>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <?php if ($_SESSION['role'] === 'admin') { ?>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <!-- DASHBOARD ADMIN -->
+            <div class="statistik">
+                <div class="stat-card">
+                    <h2><?= $total_user ?></h2>
+                    <p>Total User</p>
+                </div>
 
-        <!-- DASHBOARD ADMIN -->
-        <div class="statistik">
-            <div class="stat-card">
-                <h2><?= $total_user ?></h2>
-                <p>Total User</p>
+                <div class="stat-card">
+                    <h2><?= $naik ?></h2>
+                    <p>Harga Naik</p>
+                </div>
+
+                <div class="stat-card">
+                    <h2><?= $turun ?></h2>
+                    <p>Harga Turun</p>
+                </div>
+
+                <div class="stat-card">
+                    <h2><?= $stabil ?></h2>
+                    <p>Harga Stabil</p>
+                </div>
             </div>
 
-            <div class="stat-card">
-                <h2><?= $naik ?></h2>
-                <p>Harga Naik</p>
+            <hr class="divider">
+
+            <div class="chart-container">
+                <h3>Grafik Perubahan Harga</h3>
+                <canvas id="grafikHarga"></canvas>
             </div>
 
-            <div class="stat-card">
-                <h2><?= $turun ?></h2>
-                <p>Harga Turun</p>
+        <?php } else { ?>
+
+            <!-- DASHBOARD MEMBER -->
+            <div class="statistik"> 
+                <div class="member-area-card">
+                    <h2>Member Area</h2>
+                    <p>Anda login sebagai Member</p>
+                </div>
+                <div class="stat-card">
+                    <h2><?= $total_user ?></h2>
+                    <p>Total User</p>
+                </div>
+
+                <div class="stat-card">
+                    <h2><?= $naik ?></h2>
+                    <p>Harga Naik</p>
+                </div>
+
+                <div class="stat-card">
+                    <h2><?= $turun ?></h2>
+                    <p>Harga Turun</p>
+                </div>
+
+                <div class="stat-card">
+                    <h2><?= $stabil ?></h2>
+                    <p>Harga Stabil</p>
+                </div>
             </div>
 
-            <div class="stat-card">
-                <h2><?= $stabil ?></h2>
-                <p>Harga Stabil</p>
+            <hr class="divider">
+
+            <div class="chart-container">
+                <h3>Grafik Perubahan Harga</h3>
+                <canvas id="grafikHarga"></canvas>
             </div>
-        </div>
 
-    <?php } else { ?>
-
-        <!-- DASHBOARD MEMBER -->
-        <div class="member-area-card">
-            <h2>Member Area</h2>
-            <p>Anda login sebagai Member</p>
-        </div>
-
-    <?php } ?>
-
+        <?php } ?>
+    </div>
 </div>
 
 <?php require_once 'includes/footer.php'; ?>

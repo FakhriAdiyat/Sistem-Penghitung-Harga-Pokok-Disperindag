@@ -15,11 +15,15 @@
             </li>
 
             <li>
+                <a href="list.php">List Data</a>
+            </li> 
+
+            <li>
                 <a href="import.php">Import Data</a>
             </li>
 
             <li>
-                <a href="list.php">List Data</a>
+                <a href="ekspor.php">Ekspor Data</a>
             </li>
 
         <?php } else { ?>
@@ -29,7 +33,19 @@
             </li>
 
             <li>
+                <a href="member.php">Member</a>
+            </li>
+
+            <li>
                 <a href="list.php">List Data</a>
+            </li> 
+
+            <li>
+                <a href="import.php">Import Data</a>
+            </li>
+
+            <li>
+                <a href="ekspor.php">Ekspor Data</a>
             </li>
 
         <?php } ?>
