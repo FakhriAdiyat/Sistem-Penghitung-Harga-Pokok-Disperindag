@@ -1,0 +1,359 @@
+:root {
+  --primary: #020330;
+  --sidebar: #3388bb;
+  --dark: #000000;
+  --bg: #ffffff;
+  --soft: #e0e0e0;
+}
+
+/* ================= RESET ================= */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+}
+
+/* ================= LAYOUT ================= */
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ================= LOGIN FORM ================= */
+.login-page {
+  min-height: 100vh;
+  background: linear-gradient(to right, #8ee05a, #c8e96b);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-container {
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  width: 350px;
+}
+
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.login-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 8px;
+  background: #e0e0e0;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.login-box button {
+  width: 100%;
+  padding: 12px;
+  background: #b6e35a;
+  border: none;
+  border-radius: 8px;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.login-box button:hover {
+  background: #a4d94b;
+}
+
+/* ================= DASHBOARD ================= */
+
+.statistik {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.stat-card {
+  flex: 1;
+  min-width: 200px;
+  background: var(--soft);
+  padding: 20px;
+  border-radius: 16px;
+  text-align: center;
+  transition: 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.stat-card h2 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: bold;
+  color: var(--primary);
+}
+
+.stat-card p {
+  margin-top: 8px;
+  font-size: 16px;
+  color: #333;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  background: #d6d6d6;
+}
+
+/* ================= MEMBER DASHBOARD CARD ================= */
+
+.member-area-card {
+  width: 320px;
+  background: var(--soft);
+  padding: 25px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.member-area-card h2 {
+  margin: 0;
+  font-size: 24px;
+  color: var(--primary);
+}
+
+.member-area-card p {
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar {
+  width: 260px;
+  background: var(--sidebar);
+  padding: 25px 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+}
+
+.sidebar-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #ffffff;
+  border-bottom: 3px solid #ffffff;
+  padding-bottom: 5px;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-menu li {
+  margin-bottom: 18px;
+}
+
+.sidebar-menu a {
+  font-size: 20px;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.sidebar-menu a:hover {
+  text-decoration: underline;
+}
+
+/* ================= HEADER ================= */
+.header {
+  background: var(--dark);
+  color: #ffffff;
+  padding: 15px 25px;
+  font-size: 28px;
+  font-weight: bold;
+  margin-left: 260px;
+}
+
+/* ================= CONTENT ================= */
+.content {
+  margin-left: 260px;
+  padding: 30px;
+  background: #ffffff;
+  flex: 1;
+}
+
+.content h1 {
+  margin-top: 0;
+  font-size: 32px;
+}
+
+.subtitle {
+  font-size: 20px;
+  margin-bottom: 30px;
+}
+
+/* ================= DIVIDER ================= */
+.divider {
+  border-top: 3px solid #000;
+  margin: 35px 0;
+}
+
+/* ================= MEMBER PAGE ================= */
+.member-container {
+  background: #ffffff;
+}
+
+/* ===== FORM MEMBER ===== */
+.form-box {
+  width: 420px;
+  background: var(--soft);
+  padding: 25px;
+  border-radius: 20px;
+  margin-top: 20px;
+}
+
+.form-box h3 {
+  margin-top: 0;
+}
+
+.form-group {
+  margin-top: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+}
+
+.btn-save {
+  margin-top: 20px;
+  width: 100%;
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn-save:hover {
+  background: #3f9142;
+}
+
+/* ================= TABLE MEMBER ================= */
+.member-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.member-table th {
+  background: #1e293b;
+  color: #ffffff;
+  padding: 12px;
+  font-size: 15px;
+  text-align: left;
+}
+
+.member-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+.member-table tr:last-child td {
+  border-bottom: none;
+}
+
+.member-table tr:hover {
+  background: #f1f5f9;
+}
+
+/* ================= ROLE BADGE ================= */
+.role-admin {
+  background: #dc2626;
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.role-member {
+  background: #2563eb;
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* ================= BUTTON ================= */
+.btn-edit {
+  background: #ffc107;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.btn-delete {
+  background: #ff3b3b;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* ================= MODAL ================= */
+.modal {
+  width: 400px;
+  background: white;
+  border-radius: 15px;
+  border: 10px solid #b7e35a;
+  padding: 25px;
+  text-align: center;
+  margin: 100px auto;
+}
+
+.modal h2 {
+  margin-top: 0;
+}
+
+.btn-logout {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 10px;
+  cursor: pointer;
+}
