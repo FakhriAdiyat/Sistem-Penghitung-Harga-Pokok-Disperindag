@@ -42,6 +42,7 @@ if ($_SESSION['role'] === 'admin') {
     </p>
 
     <?php if ($_SESSION['role'] === 'admin') { ?>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
         <!-- DASHBOARD ADMIN -->
         <div class="statistik">

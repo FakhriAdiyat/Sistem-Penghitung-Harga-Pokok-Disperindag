@@ -60,26 +60,40 @@ $q_member = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
                 <h3>Daftar Member</h3>
 
                 <table class="member-table">
-                    <tr>
-                        <th>ID</th>
-                        <th>Username</th>
-                        <th>Role</th>
-                    </tr>
+    <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Role</th>
+        <th>Aksi</th>
+    </tr>
 
-                    <?php while($m = mysqli_fetch_assoc($q_member)) { ?>
-                    <tr>
-                        <td><?= $m['id'] ?></td>
-                        <td><?= $m['username'] ?></td>
-                        <td>
-                            <?php if ($m['role'] == 'admin') { ?>
-                                <span class="role-admin">Admin</span>
-                            <?php } else { ?>
-                                <span class="role-member">Member</span>
-                            <?php } ?>
-                        </td>
-                    </tr>
-                    <?php } ?>
-                </table>
+    <?php while($m = mysqli_fetch_assoc($q_member)) { ?>
+    <tr>
+        <td><?= $m['id'] ?></td>
+        <td><?= $m['username'] ?></td>
+        <td>
+            <?php if ($m['role'] == 'admin') { ?>
+                <span class="role-admin">Admin</span>
+            <?php } else { ?>
+                <span class="role-member">Member</span>
+            <?php } ?>
+        </td>
+
+        <td>
+            <?php if ($m['id'] != $_SESSION['id']) { ?>
+                <a href="delete_member.php?id=<?= $m['id'] ?>" 
+                   class="btn-delete"
+                   onclick="return confirm('Yakin ingin menghapus user ini?')">
+                   Hapus
+                </a>
+            <?php } else { ?>
+                <span style="color:gray;">Tidak bisa hapus diri sendiri</span>
+            <?php } ?>
+        </td>
+    </tr>
+    <?php } ?>
+</table>
+
 
             </div>
         </div>

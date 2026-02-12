@@ -1,5 +1,6 @@
 :root {
   --primary: #020330;
+  --primary-gradient: linear-gradient(to right, #8ee05a, #c8e96b);
   --sidebar: #3388bb;
   --dark: #000000;
   --bg: #ffffff;
@@ -26,7 +27,7 @@ body {
 /* ================= LOGIN FORM ================= */
 .login-page {
   min-height: 100vh;
-  background: linear-gradient(to right, #8ee05a, #c8e96b);
+  background: var(--primary-gradient);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -140,7 +141,7 @@ body {
 /* ================= SIDEBAR ================= */
 .sidebar {
   width: 260px;
-  background: var(--sidebar);
+  background: var(--primary-gradient) !important;
   padding: 25px 20px;
   position: fixed;
   top: 0;
@@ -251,7 +252,7 @@ body {
 .btn-save {
   margin-top: 20px;
   width: 100%;
-  background: #4caf50;
+  background: var(--primary-gradient);
   color: white;
   border: none;
   padding: 12px;
@@ -295,6 +296,19 @@ body {
 
 .member-table tr:hover {
   background: #f1f5f9;
+}
+
+.btn-delete {
+  background: #ff3b3b;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.btn-delete:hover {
+  background: #d62828;
 }
 
 /* ================= ROLE BADGE ================= */
