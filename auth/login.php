@@ -13,6 +13,7 @@
 <body class="login-page">
 
 <div class="login-container">
+    <img src="../assets/img/logo1.png" class="login-logo" alt="Logo">
     <h2>Login</h2>
 
     <div class="login-box">
