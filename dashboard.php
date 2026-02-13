@@ -82,6 +82,7 @@ if ($_SESSION['role'] === 'admin') {
                     <h2>Member Area</h2>
                     <p>Anda login sebagai Member</p>
                 </div>
+                
                 <div class="stat-card">
                     <h2><?= $total_user ?></h2>
                     <p>Total User</p>

@@ -1,5 +1,8 @@
 <div class="sidebar">
 
+    <div class="sidebar-logo">
+        <img src="assets/img/logo2.png" alt="Logo">
+    </div>
     <!-- <div class="sidebar-title">Disperindag</div> -->
 
     <ul class="sidebar-menu">
