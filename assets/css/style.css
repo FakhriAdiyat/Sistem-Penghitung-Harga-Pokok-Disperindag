@@ -24,7 +24,7 @@ body {
 .container {
   background: #ffffff;
   padding: 30px;
-  
+
   /* jarak 0,5 cm dari tepi content */
   margin: 19px;
 
@@ -32,6 +32,16 @@ body {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 
   min-height: calc(100vh - 140px);
+}
+
+.chart-container {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 16px;
+  margin-top: 30px;
+  width: 600px;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
 }
 
 /* ===================================================== */
@@ -74,13 +84,13 @@ body {
 
 /* Logo Login */
 .login-logo {
-  width: 100px;      /* sesuaikan dengan ukuran tulisan Login */
-  height: auto;      /* tinggi otomatis ikut rasio gambar */
+  width: 100px; /* sesuaikan dengan ukuran tulisan Login */
+  height: auto; /* tinggi otomatis ikut rasio gambar */
 
   display: block;
   margin: 0 auto 10px auto;
 
-  object-fit: contain;   /* penting supaya tidak terpotong */
+  object-fit: contain; /* penting supaya tidak terpotong */
 }
 
 /* Input */
@@ -130,8 +140,8 @@ body {
   height: 70px;
 
   display: flex;
-  align-items: center;   /* sejajar vertikal */
-  gap: 15px;             /* jarak antar elemen */
+  align-items: center; /* sejajar vertikal */
+  gap: 15px; /* jarak antar elemen */
 
   padding: 0 25px;
   background: #ffffff;

@@ -26,7 +26,7 @@
             </li>
 
             <li>
-                <a href="ekspor.php">Ekspor Data</a>
+                <a href="export.php">Ekspor Data</a>
             </li>
 
         <?php } else { ?>

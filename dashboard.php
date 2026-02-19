@@ -71,7 +71,7 @@ if ($_SESSION['role'] === 'admin') {
 
             <div class="chart-container">
                 <h3>Grafik Perubahan Harga</h3>
-                <canvas id="grafikHarga"></canvas>
+                <canvas id="dashboardchart"></canvas>
             </div>
 
         <?php } else { ?>
@@ -114,5 +114,5 @@ if ($_SESSION['role'] === 'admin') {
         <?php } ?>
     </div>
 </div>
-
+<script src="chart.js"></script>
 <?php require_once 'includes/footer.php'; ?>
