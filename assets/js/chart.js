@@ -1,18 +1,19 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const ctx = document.getElementById("dashboardChart");
+  const ctx = document.getElementById("dashboardchart");
 
-  if (!ctx) return; // supaya aman kalau bukan di dashboard
+  if (!ctx) return;
 
   new Chart(ctx, {
-    type: "bar",
+    type: "line",
     data: {
-      labels: ["Admin", "Member"],
+      labels: grafikLabels,
       datasets: [
         {
-          label: "Jumlah Pengguna",
-          data: [4, 18], // sementara hardcode dulu
-          backgroundColor: ["#16a34a", "#8ee05a"],
-          borderRadius: 10,
+          label: "Rata-rata Harga Bahan Pokok",
+          data: grafikData,
+          borderWidth: 2,
+          tension: 0.4,
+          fill: false,
         },
       ],
     },
@@ -20,12 +21,12 @@ document.addEventListener("DOMContentLoaded", function () {
       responsive: true,
       plugins: {
         legend: {
-          display: false,
+          display: true,
         },
       },
       scales: {
         y: {
-          beginAtZero: true,
+          beginAtZero: false,
         },
       },
     },
