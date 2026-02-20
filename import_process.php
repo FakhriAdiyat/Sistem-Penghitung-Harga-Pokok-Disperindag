@@ -11,36 +11,22 @@ if (!isset($_FILES['file_import'])) {
 $file = $_FILES['file_import'];
 $ext  = pathinfo($file['name'], PATHINFO_EXTENSION);
 
+// Ambil input HET dan keyword bahan
+$het_input = $_POST['het_hap'] ?? null;
+$bahan_keyword = $_POST['bahan_keyword'] ?? '';
+
 if (!in_array($ext, ['csv', 'xlsx'])) {
     die('Format file tidak didukung');
 }
 
-/* ================= CSV ================= */
-if ($ext === 'csv') {
-    $handle = fopen($file['tmp_name'], 'r');
-    fgetcsv($handle); // skip header
+/* ================= UPDATE HET BERDASARKAN NAMA MIRIP ================= */
+if (!empty($het_input) && !empty($bahan_keyword)) {
 
-    while (($row = fgetcsv($handle)) !== false) {
-
-        $nama_bahan = trim($row[0]);
-        $harga      = $row[2];
-        $tanggal    = $row[3];
-
-        // cari bahan_id dari tabel bahan_pokok
-        $result = mysqli_query($conn, "SELECT id FROM bahan_pokok WHERE nama_bahan = '$nama_bahan'");
-        $data   = mysqli_fetch_assoc($result);
-
-        if ($data) {
-            $bahan_id = $data['id'];
-
-            mysqli_query($conn, "
-                INSERT INTO harga (bahan_id, harga, tanggal)
-                VALUES ('$bahan_id', '$harga', '$tanggal')
-            ");
-        }
-    }
-
-    fclose($handle);
+    mysqli_query($conn, "
+        UPDATE bahan_pokok 
+        SET het_hap = '$het_input'
+        WHERE nama_bahan LIKE '%$bahan_keyword%'
+    ");
 }
 
 /* ================= XLSX ================= */
@@ -55,12 +41,12 @@ if ($ext === 'xlsx') {
 
     foreach ($rows as $index => $row) {
 
-        if ($index === 0) continue; // skip header
+        if ($index === 0) continue;
 
-        $nama_bahan = trim($row[1]);   // Komoditas
-        $kategori   = trim($row[2]);   // Jenis
-        $satuan     = trim($row[3]);   // Satuan
-        $harga      = $row[5];         // Harga Hari Ini
+        $nama_bahan = trim($row[1]);
+        $kategori   = trim($row[2]);
+        $satuan     = trim($row[3]);
+        $harga      = $row[5];
         $tanggal    = date('Y-m-d');
 
         if (!$nama_bahan || !$harga) {
@@ -94,17 +80,81 @@ if ($ext === 'xlsx') {
             }
         }
 
-        // Insert ke tabel harga
-        $insertHarga = mysqli_query($conn, "
+        // INSERT HARGA BARU
+        mysqli_query($conn, "
             INSERT INTO harga (bahan_id, harga, tanggal)
             VALUES ('$bahan_id', '$harga', '$tanggal')
         ");
 
-        if ($insertHarga) {
-            $success++;
-        } else {
-            $failed++;
+        /* ================= PERHITUNGAN STATISTIK ================= */
+
+        $resultHarga = mysqli_query($conn, "
+            SELECT harga FROM harga 
+            WHERE bahan_id = '$bahan_id'
+            ORDER BY tanggal ASC
+        ");
+
+        $total = 0;
+        $dataHarga = [];
+
+        while ($h = mysqli_fetch_assoc($resultHarga)) {
+            $dataHarga[] = $h['harga'];
+            $total += $h['harga'];
         }
+
+        $jumlah_data = count($dataHarga);
+
+        if ($jumlah_data > 0) {
+
+            $rata_rata = $total / $jumlah_data;
+
+            $total_penyimpangan = 0;
+            foreach ($dataHarga as $h) {
+                $total_penyimpangan += abs($h - $rata_rata);
+            }
+
+            $rata_penyimpangan = $total_penyimpangan / $jumlah_data;
+
+            $fluktuasi = ($rata_penyimpangan / $rata_rata) * 100;
+            $stabilitas = 100 - $fluktuasi;
+
+            // Hitung kenaikan / penurunan terakhir
+            $persen_kenaikan = 0;
+            $persen_penurunan = 0;
+            $kenaikan_rp = 0;
+            $penurunan_rp = 0;
+
+            if ($jumlah_data > 1) {
+                $harga_lama = $dataHarga[$jumlah_data - 2];
+                $harga_baru = $dataHarga[$jumlah_data - 1];
+
+                $selisih = $harga_baru - $harga_lama;
+
+                if ($selisih > 0) {
+                    $kenaikan_rp = $selisih;
+                    $persen_kenaikan = ($selisih / $harga_lama) * 100;
+                } elseif ($selisih < 0) {
+                    $penurunan_rp = abs($selisih);
+                    $persen_penurunan = (abs($selisih) / $harga_lama) * 100;
+                }
+            }
+
+            // Update semua record harga bahan tersebut
+            mysqli_query($conn, "
+                UPDATE harga 
+                SET rata_rata = '$rata_rata',
+                    rata_penyimpangan = '$rata_penyimpangan',
+                    fluktuasi_persen = '$fluktuasi',
+                    stabilitas_persen = '$stabilitas',
+                    persen_kenaikan = '$persen_kenaikan',
+                    persen_penurunan = '$persen_penurunan',
+                    kenaikan_rp = '$kenaikan_rp',
+                    penurunan_rp = '$penurunan_rp'
+                WHERE bahan_id = '$bahan_id'
+            ");
+        }
+
+        $success++;
     }
 
     echo "
@@ -116,8 +166,37 @@ if ($ext === 'xlsx') {
     exit;
 }
 
+/* ================= CSV ================= */
+if ($ext === 'csv') {
 
+    $handle = fopen($file['tmp_name'], 'r');
+    fgetcsv($handle);
 
+    while (($row = fgetcsv($handle)) !== false) {
+
+        $nama_bahan = trim($row[0]);
+        $harga      = $row[2];
+        $tanggal    = $row[3];
+
+        $result = mysqli_query($conn, "
+            SELECT id FROM bahan_pokok 
+            WHERE nama_bahan = '$nama_bahan'
+        ");
+
+        $data = mysqli_fetch_assoc($result);
+
+        if ($data) {
+            $bahan_id = $data['id'];
+
+            mysqli_query($conn, "
+                INSERT INTO harga (bahan_id, harga, tanggal)
+                VALUES ('$bahan_id', '$harga', '$tanggal')
+            ");
+        }
+    }
+
+    fclose($handle);
+}
 
 header("Location: import.php?success=1");
 exit;

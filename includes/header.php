@@ -14,7 +14,9 @@
 
     <div class="header-brand">
         <img src="assets/img/logo1.png" alt="Logo" class="header-logo">
-        <span>Disperindag</span>
+        <span onclick="location.reload()" style="cursor:pointer;">
+            Disperindag
+        </span>
     </div>
 </div>
 
