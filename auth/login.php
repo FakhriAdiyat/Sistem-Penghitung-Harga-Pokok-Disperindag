@@ -2,7 +2,6 @@
 <p style="color:red;">Session habis, silakan login ulang.</p>
 <?php endif; ?>
 
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -17,6 +16,20 @@
     <h2>Login</h2>
 
     <div class="login-box">
+        <?php if (isset($_GET['error']) && $_GET['error'] === 'invalid'): ?>
+            <div class="popup-overlay" role="alert" aria-live="assertive">
+                <div class="popup-card" role="document">
+                    <div class="popup-icon" aria-hidden="true">
+                        <span class="popup-x popup-x-left"></span>
+                        <span class="popup-x popup-x-right"></span>
+                    </div>
+                    <div class="popup-title">Login gagal</div>
+                    <div class="popup-message">Username atau password salah.</div>
+                    <button type="button" class="popup-close" onclick="closePopup()">Tutup</button>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <form action="login_process.php" method="POST">
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
@@ -25,5 +38,6 @@
     </div>
 </div>
 
+<script src="../assets/js/popup.js"></script>
 </body>
 </html>

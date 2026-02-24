@@ -1,41 +1,55 @@
 <?php
 require_once 'config/database.php';
 require_once 'includes/auth_check.php';
-require 'vendor/autoload.php';
+$allowed_roles = ['admin', 'member'];
+require_once 'includes/role_check.php';
 
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+?>
 
-// Ambil data dari database
-$query = mysqli_query($conn, "
-    SELECT h.tanggal, b.nama_bahan, h.harga
-    FROM harga h
-    JOIN bahan_pokok b ON h.bahan_id = b.id
-    ORDER BY h.tanggal DESC
-");
+<div class="layout">
 
-$spreadsheet = new Spreadsheet();
-$sheet = $spreadsheet->getActiveSheet();
+    <?php require_once 'includes/sidebar.php'; ?>
 
-// Header kolom
-$sheet->setCellValue('A1', 'Tanggal');
-$sheet->setCellValue('B1', 'Nama Bahan');
-$sheet->setCellValue('C1', 'Harga');
+    <div style="flex:1; display:flex; flex-direction:column;">
 
-$row = 2;
+        <?php require_once 'includes/header.php'; ?>
 
-while ($data = mysqli_fetch_assoc($query)) {
-    $sheet->setCellValue('A' . $row, $data['tanggal']);
-    $sheet->setCellValue('B' . $row, $data['nama_bahan']);
-    $sheet->setCellValue('C' . $row, $data['harga']);
-    $row++;
-}
+        <div class="content">
+            <div class="container">
 
-// Set header download
-header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-header('Content-Disposition: attachment;filename="data_harga.xlsx"');
-header('Cache-Control: max-age=0');
+                <h1>Export Data</h1>
+                <p class="subtitle">Download data harga berdasarkan periode (mingguan, bulanan, atau tahunan).</p>
 
-$writer = new Xlsx($spreadsheet);
-$writer->save('php://output');
-exit;
+                <div class="form-box">
+                    <h3>Pilih Periode Export</h3>
+
+                    <div class="form-group">
+                        <a href="export_process.php?period=weekly" class="btn-save" style="display:block; text-align:center; text-decoration:none;">
+                            Download Mingguan (7 hari terakhir)
+                        </a>
+                    </div>
+
+                    <div class="form-group">
+                        <a href="export_process.php?period=monthly" class="btn-save" style="display:block; text-align:center; text-decoration:none;">
+                            Download Bulanan (bulan ini)
+                        </a>
+                    </div>
+
+                    <div class="form-group">
+                        <a href="export_process.php?period=yearly" class="btn-save" style="display:block; text-align:center; text-decoration:none;">
+                            Download Tahunan (tahun ini)
+                        </a>
+                    </div>
+
+                    <p style="margin: 12px 0 0; color:#555; font-size:0.95rem;">
+                        File yang diunduh berformat Excel (.xlsx) dan berisi kolom: Nama Bahan, Harga, Harga Rata-rata, Persen Penyimpangan, Fluktuasi Persen, Stabilitas Persen, Persen Naik/Turun, Naik/Turun (Rp).
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<?php require_once 'includes/footer.php'; ?>

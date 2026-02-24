@@ -2,13 +2,9 @@
     "name": "pongo/monitoring-harga-bapok",
     "description": "Monitoring Harga Bahan Pokok",
     "type": "project",
-    "authors": [
-        {
-            "name": "FakhriAdiyat",
-            "email": "fakhriiburakawami@gmail.com"
-        }
-    ],
+    "authors": [{"name": "FakhriAdiyat", "email": "fakhriiburakawami@gmail.com"}],
     "require": {
-        "phpoffice/phpspreadsheet": "^5.4"
+        "phpoffice/phpspreadsheet": "^5.4",
+        "smalot/pdfparser": "^2.0"
     }
 }

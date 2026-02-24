@@ -6,10 +6,18 @@ namespace Composer\Autoload;
 
 class ComposerStaticInitc566413d06af5bc70e35024c8db9f7af
 {
+    public static $files = array (
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'Z' => 
         array (
             'ZipStream\\' => 10,
+        ),
+        'S' => 
+        array (
+            'Symfony\\Polyfill\\Mbstring\\' => 26,
         ),
         'P' => 
         array (
@@ -31,6 +39,10 @@ class ComposerStaticInitc566413d06af5bc70e35024c8db9f7af
         'ZipStream\\' => 
         array (
             0 => __DIR__ . '/..' . '/maennchen/zipstream-php/src',
+        ),
+        'Symfony\\Polyfill\\Mbstring\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
         ),
         'Psr\\SimpleCache\\' => 
         array (
@@ -54,6 +66,16 @@ class ComposerStaticInitc566413d06af5bc70e35024c8db9f7af
         ),
     );
 
+    public static $prefixesPsr0 = array (
+        'S' => 
+        array (
+            'Smalot\\PdfParser\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/smalot/pdfparser/src',
+            ),
+        ),
+    );
+
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );
@@ -63,6 +85,7 @@ class ComposerStaticInitc566413d06af5bc70e35024c8db9f7af
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInitc566413d06af5bc70e35024c8db9f7af::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitc566413d06af5bc70e35024c8db9f7af::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitc566413d06af5bc70e35024c8db9f7af::$prefixesPsr0;
             $loader->classMap = ComposerStaticInitc566413d06af5bc70e35024c8db9f7af::$classMap;
 
         }, null, ClassLoader::class);

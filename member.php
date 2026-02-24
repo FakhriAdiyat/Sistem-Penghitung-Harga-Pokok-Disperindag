@@ -61,15 +61,15 @@ $q_member = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
 
                 <table class="member-table">
     <tr>
-        <th>ID</th>
+        <th>No</th>
         <th>Username</th>
         <th>Role</th>
         <th>Aksi</th>
     </tr>
 
-    <?php while($m = mysqli_fetch_assoc($q_member)) { ?>
+    <?php $no = 1; while($m = mysqli_fetch_assoc($q_member)) { ?>
     <tr>
-        <td><?= $m['id'] ?></td>
+        <td><?= $no ?></td>
         <td><?= $m['username'] ?></td>
         <td>
             <?php if ($m['role'] == 'admin') { ?>
@@ -91,7 +91,7 @@ $q_member = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
             <?php } ?>
         </td>
     </tr>
-    <?php } ?>
+    <?php $no++; } ?>
 </table>
 
 
