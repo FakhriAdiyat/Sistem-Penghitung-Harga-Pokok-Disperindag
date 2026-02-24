@@ -1,5 +1,8 @@
 <?php
 require_once 'config/database.php';
+require_once 'includes/auth_check.php';
+$allowed_roles = ['admin', 'member'];
+require_once 'includes/role_check.php';
 require_once 'vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\IOFactory;

@@ -26,17 +26,13 @@
             </li>
 
             <li>
-                <a href="export.php">Ekspor Data</a>
+                <a href="export.php">Export Data</a>
             </li>
 
         <?php } else { ?>
 
             <li>
                 <a href="dashboard.php">Dashboard</a>
-            </li>
-
-            <li>
-                <a href="member.php">Member</a>
             </li>
 
             <li>
@@ -48,7 +44,7 @@
             </li>
 
             <li>
-                <a href="ekspor.php">Ekspor Data</a>
+                <a href="export.php">Export Data</a>
             </li>
 
         <?php } ?>
