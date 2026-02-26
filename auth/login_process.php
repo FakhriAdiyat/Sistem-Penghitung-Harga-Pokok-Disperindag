@@ -23,7 +23,7 @@ if ($data) {
         $_SESSION['role'] = $data['role'];
         $_SESSION['last_activity'] = time();
 
-        header("Location: ../dashboard.php");
+        header("Location: " . BASE_URL . "dashboard.php");
         exit;
 
 

@@ -9,17 +9,17 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Jika belum login
 if (!isset($_SESSION['login'])) {
-    header("Location: ../auth/login.php");
+    header("Location: " . BASE_URL . "auth/login.php");
     exit;
 }
 
 // Auto logout jika tidak aktif (15 menit)
-$timeout = 900; // 15 menit
+$timeout = 100; 
 
 if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > $timeout) {
     session_unset();
     session_destroy();
-    header("Location: ../auth/login.php?timeout=1");
+    header("Location: " . BASE_URL . "auth/login.php?timeout=1");
     exit;
 }
 

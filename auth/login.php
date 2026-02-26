@@ -1,7 +1,3 @@
-<?php if (isset($_GET['timeout'])): ?>
-<p style="color:red;">Session habis, silakan login ulang.</p>
-<?php endif; ?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -10,6 +6,12 @@
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body class="login-page">
+    <?php if (isset($_GET['timeout'])): ?>
+    <div id="toastTimeout" class="toast-timeout">
+        <span>Sesi login telah habis. Silakan login ulang.</span>
+    </div>
+<?php endif; ?>
+    
 
 <div class="login-container">
     <img src="../assets/img/logo1.png" class="login-logo" alt="Logo">
@@ -39,5 +41,6 @@
 </div>
 
 <script src="../assets/js/popup.js"></script>
+<script src="../assets/js/main.js"></script>
 </body>
 </html>
