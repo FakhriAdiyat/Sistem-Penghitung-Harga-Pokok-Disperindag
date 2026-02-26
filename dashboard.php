@@ -143,23 +143,18 @@ if ($periode == 'mingguan') {
                     <h2>Member Area</h2>
                     <p>Anda login sebagai Member</p>
                 </div>
-                
-                <div class="stat-card">
-                    <h2><?= $total_user ?? 0 ?></h2>
-                    <p>Total User</p>
-                </div>
 
-                <div class="stat-card">
+                <div class="stat-card-naik">
                     <h2><?= $naik ?? 0 ?></h2>
                     <p>Harga Naik</p>
                 </div>
 
-                <div class="stat-card">
+                <div class="stat-card-turun">
                     <h2><?= $turun ?? 0 ?></h2>
                     <p>Harga Turun</p>
                 </div>
 
-                <div class="stat-card">
+                <div class="stat-card-stabil">
                     <h2><?= $stabil ?? 0 ?></h2>
                     <p>Harga Stabil</p>
                 </div>
