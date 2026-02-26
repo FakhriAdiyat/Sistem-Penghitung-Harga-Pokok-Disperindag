@@ -15,6 +15,7 @@ if ($pakai_struktur_baru) {
         h.id,
         h.bahan_id,
         b.nama_bahan,
+        b.satuan,
         b.het_hap,
         h.harga,
         h.tanggal,
@@ -35,6 +36,7 @@ if ($pakai_struktur_baru) {
         h.id,
         h.bahan_id,
         b.nama_bahan,
+        b.satuan,
         b.het_hap,
         h.harga,
         h.tanggal,
@@ -99,7 +101,7 @@ if (isset($_GET['err'])) $msg = 'Terjadi kesalahan. Coba lagi.';
 <thead>
 <tr>
     <th>No</th>
-    <th>Bahan</th>
+    <th>Bahan (satuan)</th>
     <th>Harga</th>
     <th>Rata² Harga</th>
     <th>Persen Penyimpangan</th>
@@ -125,7 +127,10 @@ while($row = mysqli_fetch_assoc($data)) {
     data-tanggal="<?= htmlspecialchars($row['tanggal']) ?>">
     <td><?= $no++ ?></td>
 
-    <td><?= htmlspecialchars($row['nama_bahan']) ?></td>
+    <td><?= htmlspecialchars($row['nama_bahan']) ?>
+<?php if (!empty($row['satuan'])) : ?>
+(<?= htmlspecialchars($row['satuan']) ?>)
+<?php endif; ?></td>
 
     <td>Rp <?= number_format($row['harga'],0,',','.') ?></td>
 

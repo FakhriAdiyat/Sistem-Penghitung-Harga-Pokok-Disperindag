@@ -5,8 +5,6 @@ require_once 'includes/auth_check.php';
 // ================= DATA STATISTIK (UNTUK ADMIN SAJA) =================
 if ($_SESSION['role'] === 'admin') {
 
-    // total user
-    $total_user = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users"));
 
     // total bahan
     $q_bahan = mysqli_query($conn, "SELECT COUNT(*) as total FROM bahan_pokok");
@@ -99,25 +97,24 @@ if ($periode == 'mingguan') {
 
             <!-- DASHBOARD ADMIN -->
             <div class="statistik">
-                <div class="stat-card">
-                    <h2><?= $total_user ?></h2>
-                    <p>Total User</p>
-                </div>
+                
 
-                <div class="stat-card">
+                <div class="stat-card-naik">
                     <h2><?= $naik ?></h2>
                     <p>Harga Naik</p>
                 </div>
 
-                <div class="stat-card">
+                <div class="stat-card-stabil">
+                    <h2><?= $stabil ?></h2>
+                    <p>Harga Stabil</p>
+                </div>
+
+                <div class="stat-card-turun">
                     <h2><?= $turun ?></h2>
                     <p>Harga Turun</p>
                 </div>
 
-                <div class="stat-card">
-                    <h2><?= $stabil ?></h2>
-                    <p>Harga Stabil</p>
-                </div>
+                
             </div>
 
             <hr class="divider">

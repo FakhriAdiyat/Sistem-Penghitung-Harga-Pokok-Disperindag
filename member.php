@@ -5,7 +5,12 @@ require_once 'includes/role_check.php';
 
 // Ambil semua member
 $q_member = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
+
+// total user
+    $total_user = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users"));
 ?>
+
+
 
 <div class="layout">
 
@@ -58,7 +63,16 @@ $q_member = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
 
                 <!-- LIST MEMBER -->
                 <h3>Daftar Member</h3>
+                <div class="statistik">
+                    <div class="stat-card">
+                    <h2><?= $total_user ?></h2>
+                    <p>Total User</p>
+                </div>
 
+                </div>
+
+
+                
                 <table class="member-table">
     <tr>
         <th>No</th>
