@@ -4,6 +4,7 @@ require_once 'includes/auth_check.php';
 
 // SEARCH
 $keyword = $_GET['search'] ?? '';
+$keyword_safe = mysqli_real_escape_string($conn, $keyword);
 
 // Cek apakah tabel sudah pakai struktur baru (persen_penyimpangan, persen_naik_turun, naik_turun_rp)
 $cols = mysqli_query($conn, "SHOW COLUMNS FROM harga LIKE 'persen_penyimpangan'");
@@ -27,7 +28,7 @@ if ($pakai_struktur_baru) {
         h.naik_turun_rp
     FROM harga h
     JOIN bahan_pokok b ON h.bahan_id = b.id
-    WHERE b.nama_bahan LIKE '%$keyword%'
+    WHERE b.nama_bahan LIKE '%$keyword_safe%'
     ORDER BY h.tanggal DESC
     ";
 } else {
@@ -50,7 +51,7 @@ if ($pakai_struktur_baru) {
         h.penurunan_rp
     FROM harga h
     JOIN bahan_pokok b ON h.bahan_id = b.id
-    WHERE b.nama_bahan LIKE '%$keyword%'
+    WHERE b.nama_bahan LIKE '%$keyword_safe%'
     ORDER BY h.tanggal DESC
     ";
 }
@@ -96,10 +97,15 @@ if (isset($_GET['err'])) $msg = 'Terjadi kesalahan. Coba lagi.';
 <p class="list-hint">Klik satu baris data untuk menampilkan menu Tambah / Edit / Hapus.</p>
 
 <!-- TABLE WRAP (untuk posisi popup) -->
+ <form method="post" action="list_process.php">
+    <input type="hidden" name="action" value="hapus_banyak">
 <div class="list-table-wrap">
 <table class="member-table">
 <thead>
 <tr>
+     <th>
+    <input type="checkbox" id="checkAll">
+    </th>
     <th>No</th>
     <th>Bahan (satuan)</th>
     <th>Harga</th>
@@ -125,6 +131,17 @@ while($row = mysqli_fetch_assoc($data)) {
     data-bahan-nama="<?= htmlspecialchars($row['nama_bahan']) ?>" 
     data-harga="<?= (float)$row['harga'] ?>" 
     data-tanggal="<?= htmlspecialchars($row['tanggal']) ?>">
+
+    <td>
+        <input 
+            type="checkbox" 
+            class="row-check" 
+            name="ids[]" 
+            value="<?= (int)$row['id'] ?>"
+            onclick="event.stopPropagation()"
+        >
+    </td>
+
     <td><?= $no++ ?></td>
 
     <td><?= htmlspecialchars($row['nama_bahan']) ?>
@@ -220,6 +237,27 @@ while($row = mysqli_fetch_assoc($data)) {
 <?php } ?>
 </tbody>
 </table>
+<!-- Modal Hapus Banyak -->
+<div id="modalHapusBanyak" class="list-modal" aria-hidden="true">
+  <div class="list-modal-backdrop"></div>
+  <div class="list-modal-box">
+    <h3>Hapus Data Terpilih</h3>
+    <p id="hapusBanyakText">
+      Yakin ingin menghapus <b>0</b> data terpilih?
+    </p>
+
+    <div class="list-modal-actions">
+      <button type="button" id="confirmHapusBanyak" class="btn-save">Hapus</button>
+      <button type="button" class="btn-cancel-modal">Batal</button>
+    </div>
+  </div>
+</div>
+<button type="submit"
+onclick="return confirm('Yakin ingin menghapus semua data terpilih?')">
+🗑️ Hapus Terpilih
+</button>
+</div>
+</form>
 
 <!-- Popup menu (muncul di bawah baris yang diklik) -->
 <div id="rowActionPopup" class="row-action-popup" aria-hidden="true">
@@ -299,7 +337,7 @@ while($row = mysqli_fetch_assoc($data)) {
         <p id="hapusText" class="hapus-text">
             Yakin ingin menghapus data harga ini?
         </p>
-        <form method="post" action="list_process.php">
+        <form method="post" action="list_process.php" id="formHapusBanyak">
             <input type="hidden" name="action" value="hapus">
             <input type="hidden" name="id" id="hapusIdModal">
             <?php if ($keyword !== ''): ?><input type="hidden" name="search_redirect" value="<?= htmlspecialchars($keyword) ?>"><?php endif; ?>

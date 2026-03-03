@@ -66,4 +66,30 @@ if ($action === 'hapus' || $action === 'delete') {
     redirect_with($redirect, 'success=hapus');
 }
 
+if ($action === 'hapus_banyak') {
+
+    if (!isset($_POST['ids']) || !is_array($_POST['ids']) || count($_POST['ids']) === 0) {
+        redirect_with($redirect, 'err=invalid');
+    }
+
+    // sanitasi id
+    $ids = array_map('intval', $_POST['ids']);
+    $idList = implode(',', $ids);
+
+    // ambil bahan_id yang terdampak
+    $bahanQuery = mysqli_query(
+        $conn,
+        "SELECT DISTINCT bahan_id FROM harga WHERE id IN ($idList)"
+    );
+
+    // hapus data
+    mysqli_query($conn, "DELETE FROM harga WHERE id IN ($idList)");
+
+    // update statistik tiap bahan
+    while ($b = mysqli_fetch_assoc($bahanQuery)) {
+        updateStatistikHarga($conn, (int)$b['bahan_id']);
+    }
+
+    redirect_with($redirect, 'success=hapus');
+}
 redirect_with($redirect);

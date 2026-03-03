@@ -1,53 +1,72 @@
 (function () {
-  var wrap = document.querySelector('.list-table-wrap');
-  var popup = document.getElementById('rowActionPopup');
-  var rows = document.querySelectorAll('.list-data-row');
-  var modalTambah = document.getElementById('modalTambah');
-  var modalEdit = document.getElementById('modalEdit');
-  var modalHapus = document.getElementById('modalHapus');
-  var hapusIdInputModal = document.getElementById('hapusIdModal');
-  var hapusText = document.getElementById('hapusText');
+  var wrap = document.querySelector(".list-table-wrap");
+  var popup = document.getElementById("rowActionPopup");
+  var rows = document.querySelectorAll(".list-data-row");
+  var modalTambah = document.getElementById("modalTambah");
+  var modalEdit = document.getElementById("modalEdit");
+  var modalHapus = document.getElementById("modalHapus");
+  var hapusIdInputModal = document.getElementById("hapusIdModal");
+  var hapusText = document.getElementById("hapusText");
   var currentRow = null;
+
+  function hasCheckedRows() {
+    return document.querySelectorAll(".row-check:checked").length > 0;
+  }
+
+  function hasCheckedRows() {
+    return document.querySelectorAll(".row-check:checked").length > 0;
+  }
 
   function hidePopup() {
     if (popup) {
-      popup.classList.remove('show');
-      popup.setAttribute('aria-hidden', 'true');
+      popup.classList.remove("show");
+      popup.setAttribute("aria-hidden", "true");
     }
-    rows.forEach(function (r) { r.classList.remove('selected'); });
+    rows.forEach(function (r) {
+      r.classList.remove("selected");
+    });
     currentRow = null;
   }
 
   function showPopupBelowRow(row) {
     if (!wrap || !popup) return;
-    rows.forEach(function (r) { r.classList.remove('selected'); });
-    row.classList.add('selected');
+    rows.forEach(function (r) {
+      r.classList.remove("selected");
+    });
+    row.classList.add("selected");
     currentRow = row;
 
     var rect = row.getBoundingClientRect();
     var wrapRect = wrap.getBoundingClientRect();
-    popup.style.left = (rect.left - wrapRect.left + wrap.scrollLeft) + 'px';
-    popup.style.top = (rect.bottom - wrapRect.top + wrap.scrollTop + 4) + 'px';
-    popup.classList.add('show');
-    popup.setAttribute('aria-hidden', 'false');
+    popup.style.left = rect.left - wrapRect.left + wrap.scrollLeft + "px";
+    popup.style.top = rect.bottom - wrapRect.top + wrap.scrollTop + 4 + "px";
+    popup.classList.add("show");
+    popup.setAttribute("aria-hidden", "false");
   }
 
-  wrap && wrap.addEventListener('click', function (e) {
-    var row = e.target.closest('.list-data-row');
-    if (row) {
-      e.preventDefault();
-      if (currentRow === row && popup && popup.classList.contains('show')) {
+  wrap &&
+    wrap.addEventListener("click", function (e) {
+      var row = e.target.closest(".list-data-row");
+      if (row) {
+        // JIKA ADA CHECKBOX TERPILIH → JANGAN MUNCUL POPUP
+        if (hasCheckedRows()) return;
+        e.preventDefault();
+        if (currentRow === row && popup && popup.classList.contains("show")) {
+          hidePopup();
+          return;
+        }
+        showPopupBelowRow(row);
+      } else if (!e.target.closest(".row-action-popup")) {
         hidePopup();
-        return;
       }
-      showPopupBelowRow(row);
-    } else if (!e.target.closest('.row-action-popup')) {
-      hidePopup();
-    }
-  });
+    });
 
-  document.addEventListener('click', function (e) {
-    if (popup && popup.classList.contains('show') && !e.target.closest('.list-table-wrap')) {
+  document.addEventListener("click", function (e) {
+    if (
+      popup &&
+      popup.classList.contains("show") &&
+      !e.target.closest(".list-table-wrap")
+    ) {
       hidePopup();
     }
   });
@@ -56,48 +75,48 @@
     if (modalTambah) {
       var sel = modalTambah.querySelector('select[name="bahan_id"]');
       if (sel && currentRow) {
-        var bid = currentRow.getAttribute('data-bahan-id');
+        var bid = currentRow.getAttribute("data-bahan-id");
         if (bid) sel.value = bid;
       } else if (sel) {
-        sel.value = '';
+        sel.value = "";
       }
-      modalTambah.classList.add('show');
-      modalTambah.setAttribute('aria-hidden', 'false');
+      modalTambah.classList.add("show");
+      modalTambah.setAttribute("aria-hidden", "false");
     }
     hidePopup();
   }
 
   function openModalEdit(row) {
     if (!row || !modalEdit) return;
-    var id = row.getAttribute('data-id');
-    var nama = row.getAttribute('data-bahan-nama');
-    var harga = row.getAttribute('data-harga');
-    var tanggal = row.getAttribute('data-tanggal');
-    document.getElementById('editId').value = id;
-    document.getElementById('editBahanNama').value = nama;
-    document.getElementById('editHarga').value = harga;
-    document.getElementById('editTanggal').value = tanggal;
-    modalEdit.classList.add('show');
-    modalEdit.setAttribute('aria-hidden', 'false');
+    var id = row.getAttribute("data-id");
+    var nama = row.getAttribute("data-bahan-nama");
+    var harga = row.getAttribute("data-harga");
+    var tanggal = row.getAttribute("data-tanggal");
+    document.getElementById("editId").value = id;
+    document.getElementById("editBahanNama").value = nama;
+    document.getElementById("editHarga").value = harga;
+    document.getElementById("editTanggal").value = tanggal;
+    modalEdit.classList.add("show");
+    modalEdit.setAttribute("aria-hidden", "false");
     hidePopup();
   }
 
   function doHapus(row) {
     if (!row || !modalHapus || !hapusIdInputModal) return;
-    var id = row.getAttribute('data-id');
+    var id = row.getAttribute("data-id");
     if (!id) return;
 
-    var nama = row.getAttribute('data-bahan-nama') || '';
-    var harga = row.getAttribute('data-harga') || '';
-    var tanggal = row.getAttribute('data-tanggal') || '';
+    var nama = row.getAttribute("data-bahan-nama") || "";
+    var harga = row.getAttribute("data-harga") || "";
+    var tanggal = row.getAttribute("data-tanggal") || "";
 
     if (hapusText) {
-      var hargaText = '';
+      var hargaText = "";
       if (harga) {
         try {
           var n = Number(harga);
           if (!isNaN(n)) {
-            hargaText = 'Rp ' + n.toLocaleString('id-ID');
+            hargaText = "Rp " + n.toLocaleString("id-ID");
           }
         } catch (e) {
           hargaText = harga;
@@ -107,44 +126,93 @@
       var parts = [];
       if (hargaText) parts.push(hargaText);
       if (nama) parts.push(nama);
-      if (tanggal) parts.push('tanggal ' + tanggal);
+      if (tanggal) parts.push("tanggal " + tanggal);
 
-      var detail = parts.length ? ' (' + parts.join(' · ') + ')' : '';
-      hapusText.textContent = 'Yakin ingin menghapus data harga ini' + detail + '?';
+      var detail = parts.length ? " (" + parts.join(" · ") + ")" : "";
+      hapusText.textContent =
+        "Yakin ingin menghapus data harga ini" + detail + "?";
     }
 
     hapusIdInputModal.value = id;
-    modalHapus.classList.add('show');
-    modalHapus.setAttribute('aria-hidden', 'false');
+    modalHapus.classList.add("show");
+    modalHapus.setAttribute("aria-hidden", "false");
     hidePopup();
   }
 
   if (popup) {
-    popup.addEventListener('click', function (e) {
-      var btn = e.target.closest('.row-action-btn');
+    popup.addEventListener("click", function (e) {
+      var btn = e.target.closest(".row-action-btn");
       if (!btn || !currentRow) return;
-      var action = btn.getAttribute('data-action');
-      if (action === 'tambah') openModalTambah();
-      else if (action === 'edit') openModalEdit(currentRow);
-      else if (action === 'hapus') doHapus(currentRow);
+      var action = btn.getAttribute("data-action");
+      if (action === "tambah") openModalTambah();
+      else if (action === "edit") openModalEdit(currentRow);
+      else if (action === "hapus") doHapus(currentRow);
     });
   }
 
-  document.querySelectorAll('.btn-cancel-modal').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      document.querySelectorAll('.list-modal').forEach(function (m) {
-        m.classList.remove('show');
-        m.setAttribute('aria-hidden', 'true');
+  document.querySelectorAll(".btn-cancel-modal").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".list-modal").forEach(function (m) {
+        m.classList.remove("show");
+        m.setAttribute("aria-hidden", "true");
       });
     });
   });
 
-  document.querySelectorAll('.list-modal-backdrop').forEach(function (backdrop) {
-    backdrop.addEventListener('click', function () {
-      document.querySelectorAll('.list-modal').forEach(function (m) {
-        m.classList.remove('show');
-        m.setAttribute('aria-hidden', 'true');
+  document
+    .querySelectorAll(".list-modal-backdrop")
+    .forEach(function (backdrop) {
+      backdrop.addEventListener("click", function () {
+        document.querySelectorAll(".list-modal").forEach(function (m) {
+          m.classList.remove("show");
+          m.setAttribute("aria-hidden", "true");
+        });
       });
     });
-  });
 })();
+
+document.addEventListener("DOMContentLoaded", () => {
+  // === CHECK ALL ===
+  const checkAll = document.getElementById("checkAll");
+  const rowChecks = document.querySelectorAll(".row-check");
+
+  if (checkAll) {
+    checkAll.addEventListener("change", () => {
+      rowChecks.forEach((cb) => (cb.checked = checkAll.checked));
+    });
+  }
+
+  // === STOP PROPAGATION SUPAYA ROW CLICK TIDAK KE-TRIGGER ===
+  rowChecks.forEach((cb) => {
+    cb.addEventListener("click", (e) => e.stopPropagation());
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const btnHapus = document.getElementById("btnHapusBanyak");
+  const modal = document.getElementById("modalHapusBanyak");
+  const text = document.getElementById("hapusBanyakText");
+  const confirmBtn = document.getElementById("confirmHapusBanyak");
+  const form = document.getElementById("formHapusBanyak");
+
+  if (!btnHapus || !modal || !form) return;
+
+  btnHapus.addEventListener("click", () => {
+    const checked = document.querySelectorAll(".row-check:checked");
+
+    if (checked.length === 0) {
+      alert("Pilih minimal 1 data dulu!");
+      return;
+    }
+
+    text.innerHTML = `Yakin ingin menghapus <b>${checked.length}</b> data terpilih?`;
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden", "false");
+  });
+
+  if (confirmBtn & form) {
+    confirmBtn.addEventListener("click", () => {
+      form.submit(); // submit manual setelah konfirmasi
+    });
+  }
+});

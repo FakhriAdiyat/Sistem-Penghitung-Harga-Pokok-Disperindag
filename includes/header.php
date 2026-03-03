@@ -14,9 +14,9 @@
 
     <div class="header-brand">
         <img src="assets/img/logo1.png" alt="Logo" class="header-logo">
-        <span onclick="location.reload()" style="cursor:pointer;">
-            Disperindag
-        </span>
+        <span onclick="window.location.href='<?= BASE_URL ?>dashboard.php'" style="cursor:pointer;">
+    Disperindag
+</span>
     </div>
 </div>
 
