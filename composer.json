@@ -5,6 +5,7 @@
     "authors": [{"name": "FakhriAdiyat", "email": "fakhriiburakawami@gmail.com"}],
     "require": {
         "phpoffice/phpspreadsheet": "^5.4",
-        "smalot/pdfparser": "^2.0"
+        "smalot/pdfparser": "^2.0",
+        "dompdf/dompdf": "^3.1"
     }
 }
