@@ -84,20 +84,24 @@ if (isset($_GET['err'])) $msg = 'Terjadi kesalahan. Coba lagi.';
 <h1>List Data Harga</h1>
 <p class="subtitle">Data harga bahan pokok</p>
 
-<!-- SEARCH -->
-<form method="GET" class="search-box">
-    <input type="text" name="search" placeholder="Cari bahan..." value="<?= htmlspecialchars($keyword) ?>">
-    <button type="submit">Cari</button>
-</form>
-
 <?php if ($msg): ?>
 <p class="list-flash-msg <?= isset($_GET['err']) ? 'error' : 'success' ?>"><?= htmlspecialchars($msg) ?></p>
 <?php endif; ?>
 
-<p class="list-hint">Klik satu baris data untuk menampilkan menu Tambah / Edit / Hapus.</p>
 
-<!-- TABLE WRAP (untuk posisi popup) -->
- <form method="post" action="list_process.php">
+<div class="list-table-toolbar">
+    <form method="GET" class="search-box">
+        <input type="text" name="search" placeholder="Cari bahan..." value="<?= htmlspecialchars($keyword) ?>">
+        <button type="submit">Cari</button>
+    </form>
+
+    <button type="button" id="btnHapusBanyak" class="btn-hapus-banyak" disabled>
+        🗑️ Hapus Terpilih
+    </button>
+</div>
+
+<!-- TABLE WRAP -->
+ <form method="post" action="list_process.php" id="formHapusBanyak">
     <input type="hidden" name="action" value="hapus_banyak">
 <div class="list-table-wrap">
 <table class="member-table">
@@ -252,18 +256,13 @@ while($row = mysqli_fetch_assoc($data)) {
     </div>
   </div>
 </div>
-<button type="submit"
-onclick="return confirm('Yakin ingin menghapus semua data terpilih?')">
-🗑️ Hapus Terpilih
-</button>
 </div>
 </form>
 
-<!-- Popup menu (muncul di bawah baris yang diklik) -->
+<!-- Popup menu aksi baris -->
 <div id="rowActionPopup" class="row-action-popup" aria-hidden="true">
     <button type="button" class="row-action-btn row-action-tambah" data-action="tambah">➕ Tambah</button>
     <button type="button" class="row-action-btn row-action-edit" data-action="edit">✏️ Edit</button>
-    <button type="button" class="row-action-btn row-action-hapus" data-action="hapus">🗑️ Hapus</button>
 </div>
 </div>
 
@@ -323,26 +322,6 @@ onclick="return confirm('Yakin ingin menghapus semua data terpilih?')">
             </div>
             <div class="list-modal-actions">
                 <button type="submit" class="btn-save">Simpan</button>
-                <button type="button" class="btn-cancel-modal">Batal</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Modal Hapus -->
-<div id="modalHapus" class="list-modal" role="dialog" aria-hidden="true">
-    <div class="list-modal-backdrop"></div>
-    <div class="list-modal-box">
-        <h3>Hapus Data Harga</h3>
-        <p id="hapusText" class="hapus-text">
-            Yakin ingin menghapus data harga ini?
-        </p>
-        <form method="post" action="list_process.php" id="formHapusBanyak">
-            <input type="hidden" name="action" value="hapus">
-            <input type="hidden" name="id" id="hapusIdModal">
-            <?php if ($keyword !== ''): ?><input type="hidden" name="search_redirect" value="<?= htmlspecialchars($keyword) ?>"><?php endif; ?>
-            <div class="list-modal-actions">
-                <button type="submit" class="btn-save">Hapus</button>
                 <button type="button" class="btn-cancel-modal">Batal</button>
             </div>
         </form>

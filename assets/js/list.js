@@ -1,20 +1,32 @@
-(function () {
+document.addEventListener("DOMContentLoaded", function () {
   var wrap = document.querySelector(".list-table-wrap");
   var popup = document.getElementById("rowActionPopup");
-  var rows = document.querySelectorAll(".list-data-row");
   var modalTambah = document.getElementById("modalTambah");
   var modalEdit = document.getElementById("modalEdit");
-  var modalHapus = document.getElementById("modalHapus");
-  var hapusIdInputModal = document.getElementById("hapusIdModal");
-  var hapusText = document.getElementById("hapusText");
-  var currentRow = null;
 
-  function hasCheckedRows() {
-    return document.querySelectorAll(".row-check:checked").length > 0;
+  var checkAll = document.getElementById("checkAll");
+  var btnHapusBanyak = document.getElementById("btnHapusBanyak");
+  var modalHapusBanyak = document.getElementById("modalHapusBanyak");
+  var hapusBanyakText = document.getElementById("hapusBanyakText");
+  var confirmHapusBanyak = document.getElementById("confirmHapusBanyak");
+  var formHapusBanyak = document.getElementById("formHapusBanyak");
+
+  var currentRow = null;
+  var popupRow = null;
+
+  function allDataRows() {
+    return document.querySelectorAll(".list-data-row");
   }
 
-  function hasCheckedRows() {
-    return document.querySelectorAll(".row-check:checked").length > 0;
+  function checkedRows() {
+    return document.querySelectorAll(".row-check:checked");
+  }
+
+  function updateBulkDeleteButton() {
+    if (!btnHapusBanyak) return;
+    var hasSelection = checkedRows().length > 0;
+    btnHapusBanyak.disabled = !hasSelection;
+    btnHapusBanyak.classList.toggle("active", hasSelection);
   }
 
   function hidePopup() {
@@ -22,34 +34,43 @@
       popup.classList.remove("show");
       popup.setAttribute("aria-hidden", "true");
     }
-    rows.forEach(function (r) {
-      r.classList.remove("selected");
+    if (popupRow) {
+      popupRow.remove();
+      popupRow = null;
+    }
+    allDataRows().forEach(function (row) {
+      row.classList.remove("selected");
     });
     currentRow = null;
   }
 
   function showPopupBelowRow(row) {
-    if (!wrap || !popup) return;
-    rows.forEach(function (r) {
-      r.classList.remove("selected");
-    });
-    row.classList.add("selected");
-    currentRow = row;
+    if (!popup || !row || !row.parentNode) return;
 
-    var rect = row.getBoundingClientRect();
-    var wrapRect = wrap.getBoundingClientRect();
-    popup.style.left = rect.left - wrapRect.left + wrap.scrollLeft + "px";
-    popup.style.top = rect.bottom - wrapRect.top + wrap.scrollTop + 4 + "px";
+    hidePopup();
+    currentRow = row;
+    row.classList.add("selected");
+
+    popupRow = document.createElement("tr");
+    popupRow.className = "row-popup-row";
+
+    var popupCell = document.createElement("td");
+    popupCell.className = "row-popup-cell";
+    popupCell.colSpan = row.children.length;
+
+    popupCell.appendChild(popup);
+    popupRow.appendChild(popupCell);
+    row.parentNode.insertBefore(popupRow, row.nextSibling);
+
     popup.classList.add("show");
     popup.setAttribute("aria-hidden", "false");
   }
 
-  wrap &&
+  if (wrap) {
     wrap.addEventListener("click", function (e) {
       var row = e.target.closest(".list-data-row");
+
       if (row) {
-        // JIKA ADA CHECKBOX TERPILIH → JANGAN MUNCUL POPUP
-        if (hasCheckedRows()) return;
         e.preventDefault();
         if (currentRow === row && popup && popup.classList.contains("show")) {
           hidePopup();
@@ -60,6 +81,7 @@
         hidePopup();
       }
     });
+  }
 
   document.addEventListener("click", function (e) {
     if (
@@ -72,70 +94,27 @@
   });
 
   function openModalTambah() {
-    if (modalTambah) {
-      var sel = modalTambah.querySelector('select[name="bahan_id"]');
-      if (sel && currentRow) {
-        var bid = currentRow.getAttribute("data-bahan-id");
-        if (bid) sel.value = bid;
-      } else if (sel) {
-        sel.value = "";
-      }
-      modalTambah.classList.add("show");
-      modalTambah.setAttribute("aria-hidden", "false");
+    if (!modalTambah) return;
+    var sel = modalTambah.querySelector('select[name="bahan_id"]');
+    if (sel && currentRow) {
+      var bid = currentRow.getAttribute("data-bahan-id");
+      sel.value = bid || "";
     }
+    modalTambah.classList.add("show");
+    modalTambah.setAttribute("aria-hidden", "false");
     hidePopup();
   }
 
   function openModalEdit(row) {
     if (!row || !modalEdit) return;
-    var id = row.getAttribute("data-id");
-    var nama = row.getAttribute("data-bahan-nama");
-    var harga = row.getAttribute("data-harga");
-    var tanggal = row.getAttribute("data-tanggal");
-    document.getElementById("editId").value = id;
-    document.getElementById("editBahanNama").value = nama;
-    document.getElementById("editHarga").value = harga;
-    document.getElementById("editTanggal").value = tanggal;
+    document.getElementById("editId").value = row.getAttribute("data-id");
+    document.getElementById("editBahanNama").value =
+      row.getAttribute("data-bahan-nama");
+    document.getElementById("editHarga").value = row.getAttribute("data-harga");
+    document.getElementById("editTanggal").value =
+      row.getAttribute("data-tanggal");
     modalEdit.classList.add("show");
     modalEdit.setAttribute("aria-hidden", "false");
-    hidePopup();
-  }
-
-  function doHapus(row) {
-    if (!row || !modalHapus || !hapusIdInputModal) return;
-    var id = row.getAttribute("data-id");
-    if (!id) return;
-
-    var nama = row.getAttribute("data-bahan-nama") || "";
-    var harga = row.getAttribute("data-harga") || "";
-    var tanggal = row.getAttribute("data-tanggal") || "";
-
-    if (hapusText) {
-      var hargaText = "";
-      if (harga) {
-        try {
-          var n = Number(harga);
-          if (!isNaN(n)) {
-            hargaText = "Rp " + n.toLocaleString("id-ID");
-          }
-        } catch (e) {
-          hargaText = harga;
-        }
-      }
-
-      var parts = [];
-      if (hargaText) parts.push(hargaText);
-      if (nama) parts.push(nama);
-      if (tanggal) parts.push("tanggal " + tanggal);
-
-      var detail = parts.length ? " (" + parts.join(" · ") + ")" : "";
-      hapusText.textContent =
-        "Yakin ingin menghapus data harga ini" + detail + "?";
-    }
-
-    hapusIdInputModal.value = id;
-    modalHapus.classList.add("show");
-    modalHapus.setAttribute("aria-hidden", "false");
     hidePopup();
   }
 
@@ -146,73 +125,65 @@
       var action = btn.getAttribute("data-action");
       if (action === "tambah") openModalTambah();
       else if (action === "edit") openModalEdit(currentRow);
-      else if (action === "hapus") doHapus(currentRow);
     });
   }
 
   document.querySelectorAll(".btn-cancel-modal").forEach(function (btn) {
     btn.addEventListener("click", function () {
-      document.querySelectorAll(".list-modal").forEach(function (m) {
-        m.classList.remove("show");
-        m.setAttribute("aria-hidden", "true");
+      document.querySelectorAll(".list-modal").forEach(function (modal) {
+        modal.classList.remove("show");
+        modal.setAttribute("aria-hidden", "true");
       });
     });
   });
 
-  document
-    .querySelectorAll(".list-modal-backdrop")
-    .forEach(function (backdrop) {
-      backdrop.addEventListener("click", function () {
-        document.querySelectorAll(".list-modal").forEach(function (m) {
-          m.classList.remove("show");
-          m.setAttribute("aria-hidden", "true");
-        });
+  document.querySelectorAll(".list-modal-backdrop").forEach(function (backdrop) {
+    backdrop.addEventListener("click", function () {
+      document.querySelectorAll(".list-modal").forEach(function (modal) {
+        modal.classList.remove("show");
+        modal.setAttribute("aria-hidden", "true");
       });
     });
-})();
-
-document.addEventListener("DOMContentLoaded", () => {
-  // === CHECK ALL ===
-  const checkAll = document.getElementById("checkAll");
-  const rowChecks = document.querySelectorAll(".row-check");
+  });
 
   if (checkAll) {
-    checkAll.addEventListener("change", () => {
-      rowChecks.forEach((cb) => (cb.checked = checkAll.checked));
+    checkAll.addEventListener("change", function () {
+      document.querySelectorAll(".row-check").forEach(function (cb) {
+        cb.checked = checkAll.checked;
+      });
+      updateBulkDeleteButton();
     });
   }
 
-  // === STOP PROPAGATION SUPAYA ROW CLICK TIDAK KE-TRIGGER ===
-  rowChecks.forEach((cb) => {
-    cb.addEventListener("click", (e) => e.stopPropagation());
-  });
-});
+  document.querySelectorAll(".row-check").forEach(function (cb) {
+    cb.addEventListener("click", function (e) {
+      e.stopPropagation();
+      updateBulkDeleteButton();
 
-document.addEventListener("DOMContentLoaded", () => {
-  const btnHapus = document.getElementById("btnHapusBanyak");
-  const modal = document.getElementById("modalHapusBanyak");
-  const text = document.getElementById("hapusBanyakText");
-  const confirmBtn = document.getElementById("confirmHapusBanyak");
-  const form = document.getElementById("formHapusBanyak");
-
-  if (!btnHapus || !modal || !form) return;
-
-  btnHapus.addEventListener("click", () => {
-    const checked = document.querySelectorAll(".row-check:checked");
-
-    if (checked.length === 0) {
-      alert("Pilih minimal 1 data dulu!");
-      return;
-    }
-
-    text.innerHTML = `Yakin ingin menghapus <b>${checked.length}</b> data terpilih?`;
-    modal.classList.add("show");
-    modal.setAttribute("aria-hidden", "false");
+      if (checkAll) {
+        var total = document.querySelectorAll(".row-check").length;
+        var selected = checkedRows().length;
+        checkAll.checked = total > 0 && total === selected;
+      }
+    });
   });
 
-  if (confirmBtn & form) {
-    confirmBtn.addEventListener("click", () => {
-      form.submit(); // submit manual setelah konfirmasi
+  if (btnHapusBanyak && modalHapusBanyak && formHapusBanyak) {
+    btnHapusBanyak.addEventListener("click", function () {
+      var selected = checkedRows().length;
+      if (selected < 1) return;
+      hapusBanyakText.innerHTML =
+        "Yakin ingin menghapus <b>" + selected + "</b> data terpilih?";
+      modalHapusBanyak.classList.add("show");
+      modalHapusBanyak.setAttribute("aria-hidden", "false");
     });
   }
+
+  if (confirmHapusBanyak && formHapusBanyak) {
+    confirmHapusBanyak.addEventListener("click", function () {
+      formHapusBanyak.submit();
+    });
+  }
+
+  updateBulkDeleteButton();
 });
