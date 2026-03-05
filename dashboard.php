@@ -12,15 +12,19 @@ if ($_SESSION['role'] === 'admin') {
 
     // status harga
     $q_status = mysqli_query($conn, "
-        SELECT 
-            SUM(CASE WHEN h1.harga > h2.harga THEN 1 ELSE 0 END) AS naik,
-            SUM(CASE WHEN h1.harga < h2.harga THEN 1 ELSE 0 END) AS turun,
-            SUM(CASE WHEN h1.harga = h2.harga THEN 1 ELSE 0 END) AS stabil
-        FROM harga h1
-        JOIN harga h2 ON h1.bahan_id = h2.bahan_id
-        WHERE h1.tanggal = CURDATE()
-          AND h2.tanggal = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
-    ");
+    SELECT 
+        tanggal,
+        SUM(CASE WHEN persen_naik_turun > 0 THEN 1 ELSE 0 END) AS naik,
+        SUM(CASE WHEN persen_naik_turun < 0 THEN 1 ELSE 0 END) AS turun,
+        SUM(CASE 
+            WHEN persen_naik_turun = 0 
+              OR persen_naik_turun IS NULL 
+            THEN 1 ELSE 0 
+        END) AS stabil
+    FROM harga
+    GROUP BY tanggal
+    ORDER BY tanggal ASC
+");
 
     $status = mysqli_fetch_assoc($q_status);
     $naik   = $status['naik'] ?? 0;
@@ -32,7 +36,16 @@ if ($_SESSION['role'] === 'admin') {
 $periode = $_GET['periode'] ?? 'mingguan';
 
 $labels = [];
-$data   = [];
+$dataNaik = [];
+$dataTurun = [];
+$dataStabil = [];
+
+while ($row = mysqli_fetch_assoc($q_status)) {
+    $labels[]     = date('d M', strtotime($row['tanggal']));
+    $dataNaik[]   = (int)$row['naik'];
+    $dataTurun[]  = (int)$row['turun'];
+    $dataStabil[] = (int)$row['stabil'];
+}
 
 if ($periode == 'mingguan') {
 
@@ -183,20 +196,41 @@ document.addEventListener("DOMContentLoaded", function () {
         type: "line",
         data: {
             labels: <?= json_encode($labels); ?>,
-            datasets: [{
-                label: "Rata-rata Harga",
-                data: <?= json_encode($data); ?>,
-                borderColor: "#16a34a",
-                backgroundColor: "rgba(22,163,74,0.2)",
-                tension: 0.4,
-                fill: true
-            }]
+            datasets: [
+                {
+                    label: "Harga Naik",
+                    data: <?= json_encode($dataNaik); ?>,
+                    borderColor: "#16a34a",
+                    backgroundColor: "rgba(22,163,74,0.2)",
+                    tension: 0.4,
+                    fill: true
+                },
+                {
+                    label: "Harga Turun",
+                    data: <?= json_encode($dataTurun); ?>,
+                    borderColor: "#dc2626",
+                    backgroundColor: "rgba(220,38,38,0.2)",
+                    tension: 0.4,
+                    fill: true
+                },
+                {
+                    label: "Harga Stabil",
+                    data: <?= json_encode($dataStabil); ?>,
+                    borderColor: "#ca8a04",
+                    backgroundColor: "rgba(202,138,4,0.2)",
+                    tension: 0.4,
+                    fill: true
+                }
+            ]
         },
         options: {
             responsive: true,
             scales: {
                 y: {
-                    beginAtZero: false
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
                 }
             }
         }

@@ -29,6 +29,10 @@
                 <a href="export.php">Export Data</a>
             </li>
 
+            <li>
+                <a href="laporan/laporan_pdf.php">Laporan</a>
+            </li>
+
         <?php } else { ?>
 
             <li>
@@ -45,6 +49,10 @@
 
             <li>
                 <a href="export.php">Export Data</a>
+            </li>
+
+            <li>
+                <a href="laporan/laporan_pdf.php">Laporan</a>
             </li>
 
         <?php } ?>
