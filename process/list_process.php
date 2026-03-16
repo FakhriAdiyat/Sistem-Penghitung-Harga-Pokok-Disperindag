@@ -9,10 +9,10 @@ $redirect = 'list.php' . ($search !== '' ? '?search=' . urlencode($search) : '')
 
 function redirect_with(string $base, string $query = ''): void {
     if ($query === '') {
-        header("Location: {$base}");
+        header("Location: pages/{$base}");
     } else {
         $join = (strpos($base, '?') !== false) ? '&' : '?';
-        header("Location: {$base}{$join}{$query}");
+        header("Location: pages/{$base}{$join}{$query}");
     }
     exit;
 }

@@ -18,7 +18,7 @@ $allowed_roles = $allowed_roles ?? ['admin'];
 
 if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_roles, true)) {
     // All current callers are in project root, so this is correct.
-    header("Location: dashboard.php");
+    header("Location: pages/dashboard.php");
     exit;
 }
 

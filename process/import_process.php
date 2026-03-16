@@ -21,7 +21,7 @@ function setImportFlashAndRedirect(string $type, string $title, string $message,
         'message' => $message,
         'meta' => $meta,
     ];
-    header("Location: " . $redirectTo);
+    header("Location: pages/" . $redirectTo);
     exit;
 }
 

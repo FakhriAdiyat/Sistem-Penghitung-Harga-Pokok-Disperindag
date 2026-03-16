@@ -3,7 +3,7 @@ session_start();
 require '../config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: login.php");
+    header("Location: auth/login.php");
     exit;
 }
 
@@ -23,16 +23,16 @@ if ($data) {
         $_SESSION['role'] = $data['role'];
         $_SESSION['last_activity'] = time();
 
-        header("Location: " . BASE_URL . "dashboard.php");
+        header("Location: " . BASE_URL . "pages/dashboard.php");
         exit;
 
 
     } else {
-        header("Location: login.php?error=invalid");
+        header("Location: auth/login.php?error=invalid");
         exit;
     }
 
 } else {
-    header("Location: login.php?error=invalid");
+    header("Location: auth/login.php?error=invalid");
     exit;
 }

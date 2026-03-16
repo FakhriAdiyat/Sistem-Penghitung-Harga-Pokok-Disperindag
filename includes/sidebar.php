@@ -15,11 +15,11 @@
             </li>
 
             <li>
-                <a href="<?= BASE_URL ?>member/member.php">Member</a>
+                <a href="<?= BASE_URL ?>pages/member.php">Member</a>
             </li>
 
             <li>
-                <a href="<?= BASE_URL ?>listdata/list.php">List Data</a>
+                <a href="<?= BASE_URL ?>pages/list.php">List Data</a>
             </li> 
 
             <li>
@@ -33,7 +33,7 @@
             </li>
 
              <li>
-                <a href="<?= BASE_URL ?>listdata/list.php">List Data</a>
+                <a href="<?= BASE_URL ?>pages/list.php">List Data</a>
             </li> 
 
             <li>

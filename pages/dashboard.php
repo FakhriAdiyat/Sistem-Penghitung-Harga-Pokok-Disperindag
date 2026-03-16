@@ -1,6 +1,6 @@
 <?php
-require_once 'config/database.php';
-require_once 'includes/auth_check.php';
+require_once '../config/database.php';
+require_once '../includes/auth_check.php';
 
 $q_bahan = mysqli_query($conn, "SELECT id, nama_bahan FROM bahan_pokok ORDER BY nama_bahan ASC");
 $bahan_list = [];
@@ -116,8 +116,8 @@ $turun = (int)($status['turun'] ?? 0);
 $stabil = (int)($status['stabil'] ?? 0);
 ?>
 
-<?php require_once 'includes/header.php'; ?>
-<?php require_once 'includes/sidebar.php'; ?>
+<?php require_once '../includes/header.php'; ?>
+<?php require_once '../includes/sidebar.php'; ?>
 
 <div class="content">
     <div class="container">
@@ -230,4 +230,4 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
-<?php require_once 'includes/footer.php'; ?>
+<?php require_once '../includes/footer.php'; ?>

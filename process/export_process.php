@@ -26,7 +26,7 @@ if ($period === 'weekly') {
     $end = (clone $today);
     $label = 'tahunan';
 } else {
-    header("Location: export.php");
+    header("Location: export-import/export.php");
     exit;
 }
 
