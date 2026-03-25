@@ -1,4 +1,6 @@
 <?php
 session_start();
 session_destroy();
-header("Location: auth/login.php");
+require_once __DIR__ . '/../config/app.php';
+header("Location: " . BASE_URL);
+exit;

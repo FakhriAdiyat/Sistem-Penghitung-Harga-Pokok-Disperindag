@@ -11,7 +11,7 @@ $role     = $_POST['role'];
 $cek = mysqli_query($conn, "SELECT id FROM users WHERE username='$username'");
 
 if (mysqli_num_rows($cek) > 0) {
-    echo "Username sudah digunakan!";
+    header("Location: " . BASE_URL . "pages/member.php?error=username");
     exit;
 }
 
@@ -24,5 +24,5 @@ INSERT INTO users (username, password, role)
 VALUES ('$username', '$password_hash', '$role')
 ");
 
-header("Location:" . BASE_URL . "pages/member.php");
+header("Location: " . BASE_URL . "pages/member.php?success=tambah");
 exit;

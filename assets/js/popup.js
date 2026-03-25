@@ -9,6 +9,7 @@ function closePopup() {
         try {
             const url = new URL(window.location.href);
             url.searchParams.delete('error');
+            url.searchParams.delete('success');
             window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
         } catch (e) {
             // ignore
@@ -22,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const url = new URL(window.location.href);
             url.searchParams.delete('error');
+            url.searchParams.delete('success');
             window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
         } catch (e) {
             // ignore

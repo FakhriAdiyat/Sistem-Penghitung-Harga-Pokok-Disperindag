@@ -8,6 +8,18 @@ $q_member = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
 
 // total user
     $total_user = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users"));
+
+$member_popup = null;
+if (isset($_GET['success'])) {
+    if ($_GET['success'] === 'tambah') {
+        $member_popup = ['type' => 'success', 'title' => 'Berhasil', 'message' => 'Member berhasil ditambahkan.'];
+    } elseif ($_GET['success'] === 'hapus') {
+        $member_popup = ['type' => 'success', 'title' => 'Berhasil', 'message' => 'Member berhasil dihapus.'];
+    }
+}
+if (isset($_GET['error']) && $_GET['error'] === 'username') {
+    $member_popup = ['type' => 'error', 'title' => 'Gagal', 'message' => 'Username sudah digunakan.'];
+}
 ?>
 
 
@@ -29,6 +41,26 @@ $q_member = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
 
                 <h1>Manajemen Member</h1>
                 <p class="subtitle">Kelola akun member sistem</p>
+
+                <?php if ($member_popup): ?>
+                    <?php $ptype = $member_popup['type'] === 'error' ? 'error' : 'success'; ?>
+                    <div class="popup-overlay" role="alert" aria-live="assertive">
+                        <div class="popup-card <?= $ptype === 'success' ? 'popup-card-success' : 'popup-card-error' ?>" role="document">
+                            <div class="popup-icon <?= $ptype === 'success' ? 'popup-icon-success' : 'popup-icon-error' ?>" aria-hidden="true">
+                                <?php if ($ptype === 'success'): ?>
+                                    <span class="popup-check popup-check-short"></span>
+                                    <span class="popup-check popup-check-long"></span>
+                                <?php else: ?>
+                                    <span class="popup-x popup-x-left"></span>
+                                    <span class="popup-x popup-x-right"></span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="popup-title"><?= htmlspecialchars($member_popup['title']) ?></div>
+                            <div class="popup-message"><?= htmlspecialchars($member_popup['message']) ?></div>
+                            <button type="button" class="popup-close" onclick="closePopup()">Tutup</button>
+                        </div>
+                    </div>
+                <?php endif; ?>
 
                 <!-- FORM TAMBAH MEMBER -->
                 <div class="form-box">
@@ -95,9 +127,13 @@ $q_member = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
 
         <td>
             <?php if ($m['id'] != $_SESSION['id']) { ?>
-                <a href="<?= BASE_URL ?>process/delete_member.php?id=<?= $m['id'] ?>" 
+                <a href="<?= BASE_URL ?>process/delete_member.php?id=<?= $m['id'] ?>"
                    class="btn-delete"
-                   onclick="return confirm('Yakin ingin menghapus user ini?')">
+                   data-confirm="1"
+                   data-confirm-title="Hapus member"
+                   data-confirm-message="Yakin ingin menghapus user ini? Tindakan ini tidak dapat dibatalkan."
+                   data-confirm-ok="Hapus"
+                   data-confirm-danger="1">
                    Hapus
                 </a>
             <?php } else { ?>
@@ -115,4 +151,5 @@ $q_member = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
     </div>
 </div>
 
+<script src="<?= BASE_URL ?>assets/js/popup.js"></script>
 <?php require_once '../includes/footer.php'; ?>

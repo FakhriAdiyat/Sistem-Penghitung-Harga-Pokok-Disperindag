@@ -43,7 +43,7 @@
         <?php } ?>
 
         <li class="logout">
-            <a href="<?= BASE_URL ?>auth/logout.php" onclick="return confirmLogout()">Logout</a>
+            <a href="<?= BASE_URL ?>auth/logout.php" onclick="return confirmLogout(event)">Logout</a>
         </li>
 
     </ul>

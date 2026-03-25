@@ -20,5 +20,5 @@ if ($id == $_SESSION['id']) {
 // Hapus user
 mysqli_query($conn, "DELETE FROM users WHERE id='$id'");
 
-header("Location:" . BASE_URL . "pages/member.php");
+header("Location: " . BASE_URL . "pages/member.php?success=hapus");
 exit;
