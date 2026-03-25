@@ -11,7 +11,7 @@
         <?php if ($_SESSION['role'] == 'admin') { ?>
 
             <li>
-                <a href="<?= BASE_URL ?>dashboard.php">Dashboard</a>
+                <a href="<?= BASE_URL ?>pages/dashboard.php">Dashboard</a>
             </li>
 
             <li>
@@ -29,7 +29,7 @@
         <?php } else { ?>
 
             <li>
-                <a href="<?= BASE_URL ?>dashboard.php">Dashboard</a>
+                <a href="<?= BASE_URL ?>pages/dashboard.php">Dashboard</a>
             </li>
 
              <li>

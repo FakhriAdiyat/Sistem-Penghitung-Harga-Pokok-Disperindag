@@ -1,9 +1,9 @@
 <?php
-require_once __DIR__ . '../vendor/autoload.php';
-require_once __DIR__ . '../config/database.php';
-require_once __DIR__ . '../includes/auth_check.php';
+require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/auth_check.php';
 $allowed_roles = ['admin', 'member'];
-require_once __DIR__ . '../includes/role_check.php';
+require_once __DIR__ . '/../includes/role_check.php';
 
 use Dompdf\Dompdf;
 use Dompdf\Options;

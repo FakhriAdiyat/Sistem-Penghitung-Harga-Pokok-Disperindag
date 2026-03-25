@@ -26,7 +26,10 @@ if ($period === 'weekly') {
     $end = (clone $today);
     $label = 'tahunan';
 } else {
-    header("Location: export-import/export.php");
+    if (!defined('BASE_URL')) {
+        require_once dirname(__DIR__) . '/config/app.php';
+    }
+    header("Location: " . BASE_URL . "export-import/export.php");
     exit;
 }
 

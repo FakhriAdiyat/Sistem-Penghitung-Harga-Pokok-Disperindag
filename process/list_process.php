@@ -8,12 +8,16 @@ $search = $_POST['search_redirect'] ?? $_GET['search'] ?? '';
 $redirect = 'list.php' . ($search !== '' ? '?search=' . urlencode($search) : '');
 
 function redirect_with(string $base, string $query = ''): void {
-    if ($query === '') {
-        header("Location: pages/{$base}");
-    } else {
-        $join = (strpos($base, '?') !== false) ? '&' : '?';
-        header("Location: pages/{$base}{$join}{$query}");
+    // Pastikan BASE_URL sudah didefinisikan dari config/app.php
+    if (!defined('BASE_URL')) {
+        require_once dirname(__DIR__) . '/config/app.php';
     }
+    $url = BASE_URL . 'pages/' . $base;
+    if ($query !== '') {
+        $join = (strpos($base, '?') !== false) ? '&' : '?';
+        $url .= $join . $query;
+    }
+    header("Location: $url");
     exit;
 }
 

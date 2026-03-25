@@ -24,5 +24,5 @@ INSERT INTO users (username, password, role)
 VALUES ('$username', '$password_hash', '$role')
 ");
 
-header("Location: pages/member.php");
+header("Location:" . BASE_URL . "pages/member.php");
 exit;

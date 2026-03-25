@@ -1,17 +1,17 @@
 <?php
-require_once '../config/database.php';
-require_once '../includes/auth_check.php';
+require_once dirname(__DIR__) . '/config/database.php';
+require_once dirname(__DIR__) . '/includes/auth_check.php';
 $allowed_roles = ['admin', 'member'];
-require_once '../includes/role_check.php';
+require_once dirname(__DIR__) . '/includes/role_check.php';
 ?>
 
 <div class="layout">
 
-    <?php require_once '../includes/sidebar.php'; ?>
+    <?php require_once dirname(__DIR__) . '/includes/sidebar.php'; ?>
 
     <div style="flex:1; display:flex; flex-direction:column;">
 
-        <?php require_once '../includes/header.php'; ?>
+        <?php require_once dirname(__DIR__) . '/includes/header.php'; ?>
 
         <div class="content">
             <div class="container">
@@ -22,7 +22,7 @@ require_once '../includes/role_check.php';
                 <div class="form-box">
                     <h3>Pilih Tanggal Laporan</h3>
 
-                    <form method="GET" action="laporan/laporan_pdf.php">
+                    <form method="GET" action="<?= BASE_URL ?>laporan/laporan_pdf.php">
                         <div class="form-group">
                             <label for="tanggal_awal">Tanggal Kemarin</label>
                             <input
@@ -55,4 +55,4 @@ require_once '../includes/role_check.php';
     </div>
 </div>
 
-<?php require_once '../includes/footer.php'; ?>
+<?php require_once dirname(__DIR__) . '/includes/footer.php'; ?>

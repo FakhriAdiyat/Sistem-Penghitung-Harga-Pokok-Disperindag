@@ -34,7 +34,7 @@ $q_member = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
                 <div class="form-box">
                     <h3>Tambah Member</h3>
 
-                    <form action="member_process.php" method="POST">
+                    <form action="<?= BASE_URL ?>process/member_process.php" method="POST">
 
                         <div class="form-group">
                             <label>Username</label>
@@ -95,7 +95,7 @@ $q_member = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
 
         <td>
             <?php if ($m['id'] != $_SESSION['id']) { ?>
-                <a href="delete_member.php?id=<?= $m['id'] ?>" 
+                <a href="<?= BASE_URL ?>process/delete_member.php?id=<?= $m['id'] ?>" 
                    class="btn-delete"
                    onclick="return confirm('Yakin ingin menghapus user ini?')">
                    Hapus
