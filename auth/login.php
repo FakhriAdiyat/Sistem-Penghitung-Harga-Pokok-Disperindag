@@ -34,10 +34,23 @@
         <?php endif; ?>
 
         <form action="<?= BASE_URL ?>auth/login_process.php" method="POST">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Masuk</button>
-        </form>
+    
+    <input type="text" name="username" placeholder="Username" required>
+
+    <div class="password-wrapper">
+        <input type="password" id="password" name="password" placeholder="Password" required>
+        
+        <span id="togglePassword" class="toggle-password">
+            <svg id="iconEye" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/>
+  <circle cx="12" cy="12" r="3"/>
+</svg>
+        </span>
+    </div>
+
+    <button type="submit">Masuk</button>
+
+</form>
     </div>
 </div>
 

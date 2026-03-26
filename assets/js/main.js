@@ -28,3 +28,30 @@ function showSessionTimeoutToast() {
 }
 
 document.addEventListener("DOMContentLoaded", showSessionTimeoutToast);
+
+document.addEventListener("DOMContentLoaded", function () {
+  const toggle = document.getElementById("togglePassword");
+  const password = document.getElementById("password");
+
+  if (toggle && password) {
+    toggle.addEventListener("click", function () {
+      const type =
+        password.getAttribute("type") === "password" ? "text" : "password";
+      password.setAttribute("type", type);
+
+      const icon = document.getElementById("iconEye");
+
+      if (type === "password") {
+        icon.innerHTML = `
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/>
+        <circle cx="12" cy="12" r="3"/>
+    `;
+      } else {
+        icon.innerHTML = `
+        <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20C5 20 1 12 1 12a21.77 21.77 0 0 1 5.06-6.94"/>
+        <path d="M1 1l22 22"/>
+    `;
+      }
+    });
+  }
+});

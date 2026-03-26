@@ -83,6 +83,50 @@ body {
   position: relative;
   overflow: hidden;
 }
+
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  user-select: none;
+  font-size: 16px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #aaa;
+  transition: 0.2s;
+}
+
+.toggle-password:hover {
+  color: var(--primary-gradient);
+}
+
+.toggle-password svg {
+  width: 20px;
+  height: 20px;
+  stroke: #000;
+}
+
+.toggle-password:hover svg {
+  stroke: var(--green);
+}
 /* ===================== TOAST SESSION TIMEOUT ===================== */
 .toast-timeout {
   position: fixed;
