@@ -15,7 +15,7 @@
 
     <div class="header-brand">
         <img src="<?= BASE_URL ?>assets/img/logo1.png" alt="Logo" class="header-logo">
-        <span onclick="window.location.href='<?= BASE_URL ?>dashboard.php'" style="cursor:pointer;">
+        <span onclick="window.location.href='<?= BASE_URL ?>pages/dashboard.php'" style="cursor:pointer;">
     Disperindag
 </span>
     </div>

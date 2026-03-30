@@ -23,7 +23,7 @@ $q_member = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
         <!-- HEADER -->
         <?php require_once '../includes/header.php'; ?>
 
-        <!-- CONTENT (INI HTML KAMU ASLI) -->
+        <!-- CONTENT -->
         <div class="content">
             <div class="container">
 
@@ -73,40 +73,47 @@ $q_member = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
 
 
                 
-                <table class="member-table">
-    <tr>
-        <th>No</th>
-        <th>Username</th>
-        <th>Role</th>
-        <th>Aksi</th>
-    </tr>
+    <table class="member-table">
+<tr>
+    <th>No</th>
+    <th>Username</th>
+    <th>Role</th>
+    <th>Aksi</th>
+</tr>
 
-    <?php $no = 1; while($m = mysqli_fetch_assoc($q_member)) { ?>
-    <tr>
-        <td><?= $no ?></td>
-        <td><?= $m['username'] ?></td>
-        <td>
-            <?php if ($m['role'] == 'admin') { ?>
-                <span class="role-admin">Admin</span>
-            <?php } else { ?>
-                <span class="role-member">Member</span>
-            <?php } ?>
-        </td>
+<?php $no = 1; while($m = mysqli_fetch_assoc($q_member)) { ?>
+<tr>
+    <td><?= $no ?></td>
+    <td><?= htmlspecialchars($m['username']) ?></td>
+    <td>
+        <?php if ($m['role'] == 'admin') { ?>
+            <span class="role-admin">Admin</span>
+        <?php } else { ?>
+            <span class="role-member">Member</span>
+        <?php } ?>
+    </td>
 
-        <td>
-            <?php if ($m['id'] != $_SESSION['id']) { ?>
-                <a href="delete_member.php?id=<?= $m['id'] ?>" 
-                   class="btn-delete"
-                   onclick="return confirm('Yakin ingin menghapus user ini?')">
-                   Hapus
-                </a>
-            <?php } else { ?>
-                <span style="color:gray;">Tidak bisa hapus diri sendiri</span>
-            <?php } ?>
-        </td>
-    </tr>
-    <?php $no++; } ?>
+    <td>
+        <?php if ($m['id'] != $_SESSION['id']) { ?>
+
+            <a href="edit_member.php?id=<?= $m['id'] ?>" class="btn-edit">
+                Edit
+            </a>
+
+            <a href="<?= BASE_URL ?>process/delete_member.php?id=<?= $m['id'] ?>" 
+               class="btn-delete"
+               onclick="return confirm('Yakin ingin menghapus user ini?')">
+               Hapus
+            </a>
+
+        <?php } else { ?>
+            <span style="color:gray;">Tidak bisa hapus diri sendiri</span>
+        <?php } ?>
+    </td>
+</tr>
+<?php $no++; } ?>
 </table>
+
 
 
             </div>
