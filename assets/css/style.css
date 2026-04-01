@@ -83,6 +83,31 @@ body {
   position: relative;
   overflow: hidden;
 }
+
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding: 12px 45px 12px 40px;
+  border-radius: 10px;
+}
+
+/* icon mata */
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.toggle-password:hover {
+  opacity: 1;
+}
 /* ===================== TOAST SESSION TIMEOUT ===================== */
 .toast-timeout {
   position: fixed;
@@ -350,7 +375,7 @@ body {
   width: 60%;
   padding: 12px;
 
-  background: #8ee05a;
+  background: var(--primary-gradient);
   border: none;
   border-radius: 8px;
 
@@ -363,7 +388,8 @@ body {
 }
 
 .login-box button:hover {
-  background: #7bd147;
+  background: var(--primary-gradient);
+  color: #fff;
   transform: scale(1.05);
 }
 
@@ -1121,5 +1147,132 @@ body.sidebar-open .content {
   .dash-search-btn {
     width: 100%;
     border-radius: 12px;
+  }
+}
+
+/* Media Queries */
+/* Tablet */
+@media (max-width: 1024px) {
+  .container {
+    margin: 10px;
+    padding: 20px;
+  }
+
+  .form-box {
+    width: 100%;
+  }
+
+  .chart-container {
+    width: 100%;
+  }
+
+  .statistik {
+    justify-content: center;
+  }
+
+  .stat-card-naik,
+  .stat-card-stabil,
+  .stat-card-turun {
+    width: 45%;
+  }
+
+  .dashboard-filter-form {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+/* Hp */
+@media (max-width: 768px) {
+  /* HEADER */
+  .header {
+    font-size: 20px;
+    padding: 0 15px;
+  }
+
+  .header-logo {
+    width: 35px;
+    height: 35px;
+  }
+
+  /* CONTENT */
+  .content {
+    padding: 15px;
+  }
+
+  /* CONTAINER */
+  .container {
+    margin: 10px;
+    padding: 15px;
+  }
+
+  /* LOGIN */
+  .login-container {
+    width: 95%;
+    padding: 25px;
+  }
+
+  .login-container h2 {
+    font-size: 28px;
+  }
+
+  .login-box button {
+    width: 100%;
+    font-size: 18px;
+  }
+
+  /* CARD */
+  .statistik {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stat-card-naik,
+  .stat-card-stabil,
+  .stat-card-turun {
+    width: 100%;
+  }
+
+  /* FORM */
+  .form-box {
+    width: 100%;
+  }
+
+  /* TABLE SCROLL */
+  .member-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* SEARCH */
+  .search-box {
+    flex-direction: column;
+  }
+
+  .search-box button {
+    width: 100%;
+  }
+}
+/* Hp kecil */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 20px;
+  }
+
+  .login-logo {
+    width: 70px;
+  }
+
+  .login-container h2 {
+    font-size: 24px;
+  }
+
+  .header {
+    font-size: 18px;
+  }
+
+  .toggle-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
   }
 }

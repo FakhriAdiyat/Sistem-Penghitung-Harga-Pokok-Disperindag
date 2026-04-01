@@ -35,7 +35,16 @@
 
         <form action="<?= BASE_URL ?>auth/login_process.php" method="POST">
             <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
+            <div class="password-wrapper">
+    <input type="password" name="password" id="passwordInput" placeholder="Password" required>
+
+    <span class="toggle-password" onclick="togglePassword()">
+        <!-- ICON MATA (SVG) -->
+        <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="gray" viewBox="0 0 24 24">
+            <path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
+        </svg>
+    </span>
+</div>
             <button type="submit">Masuk</button>
         </form>
     </div>

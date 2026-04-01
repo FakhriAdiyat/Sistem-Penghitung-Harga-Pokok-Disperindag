@@ -43,7 +43,16 @@ $q_member = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
 
                         <div class="form-group">
                             <label>Password</label>
-                            <input type="password" name="password" required>
+                            <div class="password-wrapper">
+    <input type="password" name="password" id="passwordInput" placeholder="Password" required>
+
+    <span class="toggle-password" onclick="togglePassword()">
+        <!-- ICON MATA (SVG) -->
+        <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="gray" viewBox="0 0 24 24">
+            <path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
+        </svg>
+    </span>
+</div>
                         </div>
 
                         <div class="form-group">
@@ -94,22 +103,28 @@ $q_member = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
     </td>
 
     <td>
-        <?php if ($m['id'] != $_SESSION['id']) { ?>
+    <?php if ($m['id'] == $_SESSION['id']) { ?>
 
-            <a href="edit_member.php?id=<?= $m['id'] ?>" class="btn-edit">
-                Edit
-            </a>
+        <!-- AKUN SENDIRI -->
+        <a href="edit_member.php?id=<?= $m['id'] ?>" class="btn-edit">
+            Edit
+        </a>
 
-            <a href="<?= BASE_URL ?>process/delete_member.php?id=<?= $m['id'] ?>" 
-               class="btn-delete"
-               onclick="return confirm('Yakin ingin menghapus user ini?')">
-               Hapus
-            </a>
+    <?php } else { ?>
 
-        <?php } else { ?>
-            <span style="color:gray;">Tidak bisa hapus diri sendiri</span>
-        <?php } ?>
-    </td>
+        <!-- USER LAIN -->
+        <a href="edit_member.php?id=<?= $m['id'] ?>" class="btn-edit">
+            Edit
+        </a>
+
+        <a href="<?= BASE_URL ?>process/delete_member.php?id=<?= $m['id'] ?>" 
+           class="btn-delete"
+           onclick="return confirm('Yakin ingin menghapus user ini?')">
+           Hapus
+        </a>
+
+    <?php } ?>
+</td>
 </tr>
 <?php $no++; } ?>
 </table>
