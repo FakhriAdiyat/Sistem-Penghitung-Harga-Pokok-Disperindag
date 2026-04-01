@@ -34,7 +34,7 @@ $q_member = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
                 <div class="form-box">
                     <h3>Tambah Member</h3>
 
-                    <form action="member_process.php" method="POST">
+                    <form action="../process/member_process.php" method="POST">
 
                         <div class="form-group">
                             <label>Username</label>
