@@ -1,21 +1,20 @@
 console.log("MAIN JS OK");
 
-function confirmLogout() {
-  return confirm("Apakah Anda yakin ingin logout?");
-}
+function togglePassword(trigger) {
+  let input = null;
+  let icon = null;
 
-function showSessionTimeoutToast() {
-  const toast = document.getElementById("toastTimeout");
-  if (!toast) return;
+  if (trigger && trigger.closest) {
+    const wrap = trigger.closest(".password-wrapper");
+    if (wrap) {
+      input = wrap.querySelector("input");
+      icon = wrap.querySelector("svg");
+    }
+  }
 
-  setTimeout(() => toast.classList.add("hide"), 4000);
-}
-
-document.addEventListener("DOMContentLoaded", showSessionTimeoutToast);
-
-function togglePassword() {
-  const input = document.getElementById("passwordInput");
-  const icon = document.getElementById("eyeIcon");
+  if (!input) input = document.getElementById("passwordInput");
+  if (!icon) icon = document.getElementById("eyeIcon");
+  if (!input || !icon) return;
 
   if (input.type === "password") {
     input.type = "text";

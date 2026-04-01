@@ -8,6 +8,16 @@ $q_member = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
 
 // total user
     $total_user = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM users"));
+
+$success = $_GET['success'] ?? '';
+$successMessage = '';
+if ($success === 'tambah') {
+    $successMessage = 'Member berhasil ditambahkan.';
+} elseif ($success === 'hapus') {
+    $successMessage = 'Member berhasil dihapus.';
+} elseif ($success === 'edit') {
+    $successMessage = 'Member berhasil diperbarui.';
+}
 ?>
 
 
@@ -26,6 +36,9 @@ $q_member = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
         <!-- CONTENT -->
         <div class="content">
             <div class="container">
+                <?php if ($successMessage !== ''): ?>
+                    <div id="flashPopupData" data-popup-message="<?= htmlspecialchars($successMessage) ?>"></div>
+                <?php endif; ?>
 
                 <h1>Manajemen Member</h1>
                 <p class="subtitle">Kelola akun member sistem</p>
@@ -106,20 +119,20 @@ $q_member = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
     <?php if ($m['id'] == $_SESSION['id']) { ?>
 
         <!-- AKUN SENDIRI -->
-        <a href="edit_member.php?id=<?= $m['id'] ?>" class="btn-edit">
+        <a href="edit_member.php?id=<?= $m['id'] ?>" class="btn-edit" data-open-edit-member data-edit-url="<?= BASE_URL ?>pages/partials/edit_member_form.php?id=<?= $m['id'] ?>">
             Edit
         </a>
 
     <?php } else { ?>
 
         <!-- USER LAIN -->
-        <a href="edit_member.php?id=<?= $m['id'] ?>" class="btn-edit">
+        <a href="edit_member.php?id=<?= $m['id'] ?>" class="btn-edit" data-open-edit-member data-edit-url="<?= BASE_URL ?>pages/partials/edit_member_form.php?id=<?= $m['id'] ?>">
             Edit
         </a>
 
         <a href="<?= BASE_URL ?>process/delete_member.php?id=<?= $m['id'] ?>" 
            class="btn-delete"
-           onclick="return confirm('Yakin ingin menghapus user ini?')">
+           data-confirm-action="delete-member">
            Hapus
         </a>
 
@@ -128,6 +141,17 @@ $q_member = mysqli_query($conn, "SELECT * FROM users ORDER BY id DESC");
 </tr>
 <?php $no++; } ?>
 </table>
+
+<!-- MODAL EDIT MEMBER -->
+<div id="editMemberModal" class="list-modal" aria-hidden="true">
+    <div class="list-modal-backdrop" data-close-edit-member></div>
+    <div class="list-modal-box member-edit-modal-box" role="dialog" aria-modal="true" aria-labelledby="editMemberModalTitle">
+        <h3 id="editMemberModalTitle" class="member-edit-modal-title">Edit Member</h3>
+        <div id="editMemberModalBody">
+            <div class="member-edit-loading">Memuat form...</div>
+        </div>
+    </div>
+</div>
 
 
 

@@ -87,22 +87,35 @@ body {
 .password-wrapper {
   position: relative;
   width: 100%;
+  margin-bottom: 15px;
 }
 
 .password-wrapper input {
   width: 100%;
   padding: 12px 45px 12px 40px;
   border-radius: 10px;
+  margin-bottom: 0;
 }
 
 /* icon mata */
 .toggle-password {
   position: absolute;
   right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 0;
+  width: 24px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
   cursor: pointer;
   opacity: 0.7;
+}
+
+.toggle-password svg {
+  display: block;
+  width: 20px;
+  height: 20px;
 }
 
 .toggle-password:hover {
@@ -1051,6 +1064,53 @@ body.sidebar-open .content {
   background: #fff;
   cursor: pointer;
   font-size: 1rem;
+}
+
+/* Member edit popup palette */
+.member-edit-modal-box {
+  max-width: 500px;
+  background: var(--soft);
+  border: 1px solid #d6d9de;
+  border-radius: 20px;
+}
+
+.member-edit-modal-title {
+  margin: 0 0 6px 0;
+  color: var(--primary);
+}
+
+.member-edit-loading {
+  color: #475569;
+}
+
+.member-edit-modal-subtitle {
+  margin: 0 0 14px;
+  color: #64748b;
+}
+
+.member-edit-note {
+  color: #6b7280;
+}
+
+.member-edit-password-wrap {
+  margin-bottom: 0;
+}
+
+.member-edit-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.member-edit-submit {
+  margin-top: 0;
+  flex: 1;
+}
+
+.member-edit-cancel {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
 }
 
 /* ===================================================== */

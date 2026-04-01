@@ -13,12 +13,12 @@ $id = $_GET['id'] ?? null;
 
 // Jangan boleh hapus diri sendiri
 if ($id == $_SESSION['id']) {
-    header("Location: ../pages/member.php");
+    header("Location: ../pages/member.php?success=hapus");
     exit;
 }
 
 // Hapus user
 mysqli_query($conn, "DELETE FROM users WHERE id='$id'");
 
-header("Location: ../pages/member.php");
+header("Location: ../pages/member.php?success=hapus");
 exit;

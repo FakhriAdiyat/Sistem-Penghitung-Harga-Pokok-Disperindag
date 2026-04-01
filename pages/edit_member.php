@@ -42,7 +42,7 @@ if (!$data) {
 
                 <div class="form-box">
 
-                    <form action="<?= BASE_URL ?>process/member_process.php" method="POST">
+                    <form action="<?= BASE_URL ?>process/member_process.php" method="POST" data-confirm-action="edit-member">
 
                         <input type="hidden" name="id" value="<?= $data['id'] ?>">
 

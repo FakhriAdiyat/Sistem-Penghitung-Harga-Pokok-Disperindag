@@ -26,7 +26,7 @@ if (!isset($_POST['update'])) {
         VALUES ('$username', '$password_hash', '$role')
     ");
 
-    header("Location: ../pages/member.php");
+    header("Location: ../pages/member.php?success=tambah");
     exit;
 }
 
@@ -70,6 +70,6 @@ if (isset($_POST['update'])) {
         ");
     }
 
-    header("Location: ../pages/member.php");
+    header("Location: ../pages/member.php?success=edit");
     exit;
 }
