@@ -136,7 +136,7 @@ if (isset($_GET['err'])) $msg = 'Terjadi kesalahan. Coba lagi.';
 </div>
 
 <!-- TABLE WRAP -->
- <form method="post" action="list_process.php" id="formHapusBanyak">
+ <form method="post" action="../process/list_process.php" id="formHapusBanyak">
     <input type="hidden" name="action" value="hapus_banyak">
 <div class="list-table-wrap">
 <table class="member-table">
@@ -301,7 +301,7 @@ while($row = mysqli_fetch_assoc($data)) {
   <div class="list-modal-box import-modal-box">
     <h3>Import Data Harga</h3>
     <p class="form-note">Upload file Excel/CSV/PDF untuk import data harga.</p>
-    <form action="import_process.php" method="post" enctype="multipart/form-data">
+    <form action="../process/import_process.php" method="post" enctype="multipart/form-data">
       <input type="hidden" name="redirect_to" value="list">
       <div class="form-group">
         <label>Pilih File (Excel / CSV / PDF)</label>
@@ -339,9 +339,9 @@ while($row = mysqli_fetch_assoc($data)) {
     <p class="form-note">Pilih periode file Excel yang akan diunduh.</p>
     <div class="export-actions">
       <div class="export-grid">
-        <a href="export_process.php?period=weekly" class="btn-save btn-export-option" target="_blank" rel="noopener">Download Mingguan</a>
-        <a href="export_process.php?period=monthly" class="btn-save btn-export-option" target="_blank" rel="noopener">Download Bulanan</a>
-        <a href="export_process.php?period=yearly" class="btn-save btn-export-option" target="_blank" rel="noopener">Download Tahunan</a>
+        <a href="../process/export_process.php?period=weekly" class="btn-save btn-export-option" target="_blank" rel="noopener">Download Mingguan</a>
+        <a href="../process/export_process.php?period=monthly" class="btn-save btn-export-option" target="_blank" rel="noopener">Download Bulanan</a>
+        <a href="../process/export_process.php?period=yearly" class="btn-save btn-export-option" target="_blank" rel="noopener">Download Tahunan</a>
       </div>
       <button type="button" class="btn-cancel-modal export-close">Tutup</button>
     </div>
@@ -360,7 +360,7 @@ while($row = mysqli_fetch_assoc($data)) {
     <div class="list-modal-backdrop"></div>
     <div class="list-modal-box">
         <h3>Tambah Data Harga</h3>
-        <form method="post" action="list_process.php">
+        <form method="post" action="../process/list_process.php">
             <input type="hidden" name="action" value="tambah">
             <?php if ($keyword !== ''): ?><input type="hidden" name="search_redirect" value="<?= htmlspecialchars($keyword) ?>"><?php endif; ?>
             <div class="form-group">
@@ -393,7 +393,7 @@ while($row = mysqli_fetch_assoc($data)) {
     <div class="list-modal-backdrop"></div>
     <div class="list-modal-box">
         <h3>Edit Data Harga</h3>
-        <form method="post" action="list_process.php">
+        <form method="post" action="../process/list_process.php">
             <input type="hidden" name="action" value="edit">
             <input type="hidden" name="id" id="editId">
             <?php if ($keyword !== ''): ?><input type="hidden" name="search_redirect" value="<?= htmlspecialchars($keyword) ?>"><?php endif; ?>

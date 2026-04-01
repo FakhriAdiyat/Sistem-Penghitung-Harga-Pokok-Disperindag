@@ -11,7 +11,21 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 $period = $_GET['period'] ?? '';
 $period = is_string($period) ? strtolower(trim($period)) : '';
 
+// Anchor periode export ke tanggal data terbaru (biar export mingguan/bulanan tidak kosong
+// kalau data terakhir bukan "hari ini"). Fallback ke hari ini kalau tabel kosong.
 $today = new DateTime('today');
+$maxRes = mysqli_query($conn, "SELECT MAX(tanggal) AS max_tanggal FROM harga");
+if ($maxRes) {
+    $maxRow = mysqli_fetch_assoc($maxRes);
+    $maxTanggal = $maxRow['max_tanggal'] ?? null;
+    if (is_string($maxTanggal) && $maxTanggal !== '') {
+        try {
+            $today = new DateTime($maxTanggal);
+        } catch (Exception $e) {
+            // ignore, keep today
+        }
+    }
+}
 
 if ($period === 'weekly') {
     $start = (clone $today)->modify('-6 days'); // inklusif: total 7 hari
@@ -26,32 +40,60 @@ if ($period === 'weekly') {
     $end = (clone $today);
     $label = 'tahunan';
 } else {
-    header("Location: export-import/export.php");
+    header("Location: ../export-import/export.php");
     exit;
 }
 
 $startStr = $start->format('Y-m-d');
 $endStr = $end->format('Y-m-d');
 
-$query = mysqli_query(
-    $conn,
+// Kompatibilitas: beberapa instalasi masih memakai struktur lama (rata_penyimpangan, persen_kenaikan/penurunan, dll)
+$cols = mysqli_query($conn, "SHOW COLUMNS FROM harga LIKE 'persen_penyimpangan'");
+$pakai_struktur_baru = ($cols && mysqli_num_rows($cols) > 0);
+
+if ($pakai_struktur_baru) {
+    $query = mysqli_query(
+        $conn,
+        "
+        SELECT
+            h.tanggal,
+            b.nama_bahan,
+            h.harga,
+            h.rata_rata,
+            h.persen_penyimpangan,
+            h.fluktuasi_persen,
+            h.stabilitas_persen,
+            h.persen_naik_turun,
+            h.naik_turun_rp
+        FROM harga h
+        JOIN bahan_pokok b ON h.bahan_id = b.id
+        WHERE h.tanggal BETWEEN '$startStr' AND '$endStr'
+        ORDER BY h.tanggal ASC, b.nama_bahan ASC
     "
-    SELECT
-        h.tanggal,
-        b.nama_bahan,
-        h.harga,
-        h.rata_rata,
-        h.persen_penyimpangan,
-        h.fluktuasi_persen,
-        h.stabilitas_persen,
-        h.persen_naik_turun,
-        h.naik_turun_rp
-    FROM harga h
-    JOIN bahan_pokok b ON h.bahan_id = b.id
-    WHERE h.tanggal BETWEEN '$startStr' AND '$endStr'
-    ORDER BY h.tanggal ASC, b.nama_bahan ASC
-"
-);
+    );
+} else {
+    $query = mysqli_query(
+        $conn,
+        "
+        SELECT
+            h.tanggal,
+            b.nama_bahan,
+            h.harga,
+            h.rata_rata,
+            h.rata_penyimpangan,
+            h.fluktuasi_persen,
+            h.stabilitas_persen,
+            h.persen_kenaikan,
+            h.persen_penurunan,
+            h.kenaikan_rp,
+            h.penurunan_rp
+        FROM harga h
+        JOIN bahan_pokok b ON h.bahan_id = b.id
+        WHERE h.tanggal BETWEEN '$startStr' AND '$endStr'
+        ORDER BY h.tanggal ASC, b.nama_bahan ASC
+    "
+    );
+}
 
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
@@ -69,6 +111,28 @@ $sheet->setCellValue('I1', 'Naik/Turun (Rp)');
 $row = 2;
 if ($query) {
     while ($data = mysqli_fetch_assoc($query)) {
+        if (!$pakai_struktur_baru) {
+            $persenPenyimpangan = null;
+            if (!empty($data['rata_rata']) && (float)$data['rata_rata'] > 0 && isset($data['rata_penyimpangan']) && $data['rata_penyimpangan'] !== null) {
+                $persenPenyimpangan = round(((float)$data['rata_penyimpangan'] / (float)$data['rata_rata']) * 100, 2);
+            }
+
+            $pn = null;
+            $rp = null;
+            if (!empty($data['persen_kenaikan']) && (float)$data['persen_kenaikan'] > 0) {
+                $pn = (float)$data['persen_kenaikan'];
+                $rp = !empty($data['kenaikan_rp']) ? (float)$data['kenaikan_rp'] : null;
+            } elseif (!empty($data['persen_penurunan']) && (float)$data['persen_penurunan'] > 0) {
+                $pn = -(float)$data['persen_penurunan'];
+                $rp = !empty($data['penurunan_rp']) ? -(float)$data['penurunan_rp'] : null;
+            }
+
+            // Samakan key dengan struktur baru supaya logic output tetap konsisten
+            $data['persen_penyimpangan'] = $persenPenyimpangan;
+            $data['persen_naik_turun'] = $pn;
+            $data['naik_turun_rp'] = $rp;
+        }
+
         $sheet->setCellValue('A' . $row, $data['tanggal']);
         $sheet->setCellValue('B' . $row, $data['nama_bahan']);
         $sheet->setCellValue('C' . $row, (float) $data['harga']);

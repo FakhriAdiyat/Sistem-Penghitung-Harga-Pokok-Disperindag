@@ -8,11 +8,12 @@ $search = $_POST['search_redirect'] ?? $_GET['search'] ?? '';
 $redirect = 'list.php' . ($search !== '' ? '?search=' . urlencode($search) : '');
 
 function redirect_with(string $base, string $query = ''): void {
+    // Redirect ke ../pages/ dari folder process
     if ($query === '') {
-        header("Location: pages/{$base}");
+        header("Location: ../pages/{$base}");
     } else {
         $join = (strpos($base, '?') !== false) ? '&' : '?';
-        header("Location: pages/{$base}{$join}{$query}");
+        header("Location: ../pages/{$base}{$join}{$query}");
     }
     exit;
 }
@@ -67,27 +68,39 @@ if ($action === 'hapus' || $action === 'delete') {
 }
 
 if ($action === 'hapus_banyak') {
-
     if (!isset($_POST['ids']) || !is_array($_POST['ids']) || count($_POST['ids']) === 0) {
         redirect_with($redirect, 'err=invalid');
     }
 
-    // sanitasi id
-    $ids = array_map('intval', $_POST['ids']);
+    // Validasi: hanya ID integer positif
+    $ids = array_filter($_POST['ids'], function($id) {
+        return is_numeric($id) && intval($id) > 0;
+    });
+    $ids = array_map('intval', $ids);
+    if (count($ids) === 0) {
+        redirect_with($redirect, 'err=invalid');
+    }
     $idList = implode(',', $ids);
 
-    // ambil bahan_id yang terdampak
-    $bahanQuery = mysqli_query(
-        $conn,
-        "SELECT DISTINCT bahan_id FROM harga WHERE id IN ($idList)"
-    );
+    // Cek data yang benar-benar ada
+    $result = mysqli_query($conn, "SELECT id, bahan_id FROM harga WHERE id IN ($idList)");
+    $foundIds = [];
+    $bahanIds = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $foundIds[] = (int)$row['id'];
+        $bahanIds[] = (int)$row['bahan_id'];
+    }
+    if (count($foundIds) === 0) {
+        redirect_with($redirect, 'err=notfound');
+    }
+    $foundIdList = implode(',', $foundIds);
 
-    // hapus data
-    mysqli_query($conn, "DELETE FROM harga WHERE id IN ($idList)");
+    // Hapus data yang valid saja
+    mysqli_query($conn, "DELETE FROM harga WHERE id IN ($foundIdList)");
 
-    // update statistik tiap bahan
-    while ($b = mysqli_fetch_assoc($bahanQuery)) {
-        updateStatistikHarga($conn, (int)$b['bahan_id']);
+    // Update statistik tiap bahan unik
+    foreach (array_unique($bahanIds) as $bahanId) {
+        updateStatistikHarga($conn, $bahanId);
     }
 
     redirect_with($redirect, 'success=hapus');

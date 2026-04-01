@@ -21,7 +21,8 @@ function setImportFlashAndRedirect(string $type, string $title, string $message,
         'message' => $message,
         'meta' => $meta,
     ];
-    header("Location: pages/" . $redirectTo);
+    // File ini berada di folder `process`, jadi redirect harus kembali ke `../pages/`
+    header("Location: ../pages/" . ltrim($redirectTo, '/'));
     exit;
 }
 
