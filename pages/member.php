@@ -115,26 +115,30 @@ if ($success === 'tambah') {
         <?php } ?>
     </td>
 
-    <td>
+    <td class="member-action-cell">
     <?php if ($m['id'] == $_SESSION['id']) { ?>
 
         <!-- AKUN SENDIRI -->
-        <a href="edit_member.php?id=<?= $m['id'] ?>" class="btn-edit" data-open-edit-member data-edit-url="<?= BASE_URL ?>pages/partials/edit_member_form.php?id=<?= $m['id'] ?>">
-            Edit
-        </a>
+        <div class="member-action-group">
+            <a href="edit_member.php?id=<?= $m['id'] ?>" class="btn-edit" data-open-edit-member data-edit-url="<?= BASE_URL ?>pages/partials/edit_member_form.php?id=<?= $m['id'] ?>">
+                Edit
+            </a>
+        </div>
 
     <?php } else { ?>
 
         <!-- USER LAIN -->
-        <a href="edit_member.php?id=<?= $m['id'] ?>" class="btn-edit" data-open-edit-member data-edit-url="<?= BASE_URL ?>pages/partials/edit_member_form.php?id=<?= $m['id'] ?>">
-            Edit
-        </a>
+        <div class="member-action-group">
+            <a href="edit_member.php?id=<?= $m['id'] ?>" class="btn-edit" data-open-edit-member data-edit-url="<?= BASE_URL ?>pages/partials/edit_member_form.php?id=<?= $m['id'] ?>">
+                Edit
+            </a>
 
-        <a href="<?= BASE_URL ?>process/delete_member.php?id=<?= $m['id'] ?>" 
-           class="btn-delete"
-           data-confirm-action="delete-member">
-           Hapus
-        </a>
+            <a href="<?= BASE_URL ?>process/delete_member.php?id=<?= $m['id'] ?>" 
+               class="btn-delete"
+               data-confirm-action="delete-member">
+               Hapus
+            </a>
+        </div>
 
     <?php } ?>
 </td>

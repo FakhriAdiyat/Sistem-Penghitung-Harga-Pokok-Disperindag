@@ -3,6 +3,9 @@ document.addEventListener("DOMContentLoaded", function () {
   var popup = document.getElementById("rowActionPopup");
   var modalTambah = document.getElementById("modalTambah");
   var modalEdit = document.getElementById("modalEdit");
+  var supportsHover =
+    window.matchMedia &&
+    window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
   var checkAll = document.getElementById("checkAll");
   var btnHapusBanyak = document.getElementById("btnHapusBanyak");
@@ -50,6 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function showPopupBelowRow(row) {
     if (!popup || !row || !row.parentNode) return;
+    if (currentRow === row && popup.classList.contains("show")) return;
 
     hidePopup();
     currentRow = row;
@@ -71,20 +75,35 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   if (wrap) {
-    wrap.addEventListener("click", function (e) {
-      var row = e.target.closest(".list-data-row");
-
-      if (row) {
-        e.preventDefault();
-        if (currentRow === row && popup && popup.classList.contains("show")) {
-          hidePopup();
-          return;
+    if (supportsHover) {
+      wrap.addEventListener("mouseover", function (e) {
+        var row = e.target.closest(".list-data-row");
+        if (row) {
+          showPopupBelowRow(row);
         }
-        showPopupBelowRow(row);
-      } else if (!e.target.closest(".row-action-popup")) {
-        hidePopup();
-      }
-    });
+      });
+
+      wrap.addEventListener("mouseleave", function (e) {
+        if (!e.relatedTarget || !wrap.contains(e.relatedTarget)) {
+          hidePopup();
+        }
+      });
+    } else {
+      wrap.addEventListener("click", function (e) {
+        var row = e.target.closest(".list-data-row");
+
+        if (row) {
+          e.preventDefault();
+          if (currentRow === row && popup && popup.classList.contains("show")) {
+            hidePopup();
+            return;
+          }
+          showPopupBelowRow(row);
+        } else if (!e.target.closest(".row-action-popup")) {
+          hidePopup();
+        }
+      });
+    }
   }
 
   document.addEventListener("click", function (e) {

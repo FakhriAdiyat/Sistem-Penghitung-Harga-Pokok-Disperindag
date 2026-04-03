@@ -67,6 +67,7 @@ $data = mysqli_query($conn, $query);
 // Daftar bahan untuk dropdown Tambah
 $bahan_list = mysqli_query($conn, "SELECT id, nama_bahan FROM bahan_pokok ORDER BY nama_bahan ASC");
 $bahan_for_import = mysqli_query($conn, "SELECT id, nama_bahan FROM bahan_pokok ORDER BY nama_bahan ASC");
+$import_template_url = BASE_URL . 'assets/Format/' . rawurlencode('Format Import Data Bapok.xlsx');
 
 $msg = '';
 if (isset($_GET['success'])) {
@@ -299,31 +300,43 @@ while($row = mysqli_fetch_assoc($data)) {
 <div id="modalImport" class="list-modal" role="dialog" aria-hidden="true">
   <div class="list-modal-backdrop"></div>
   <div class="list-modal-box import-modal-box">
-    <h3>Import Data Harga</h3>
-    <p class="form-note">Upload file Excel/CSV/PDF untuk import data harga.</p>
-    <form action="../process/import_process.php" method="post" enctype="multipart/form-data">
+    <div class="import-modal-header">
+      <h3>Import Data Harga</h3>
+    </div>
+    <form action="../process/import_process.php" method="post" enctype="multipart/form-data" class="import-modal-form">
       <input type="hidden" name="redirect_to" value="list">
-      <div class="form-group">
-        <label>Pilih File (Excel / CSV / PDF)</label>
-        <input type="file" name="file_import" accept=".csv,.xlsx,.xls,.ods,.pdf" required>
+      <div class="import-template-box">
+        <div class="import-template-copy">
+          <p>silahkan unduh format data bapok</p>
+        </div>
+        <a href="<?= htmlspecialchars($import_template_url) ?>" class="import-template-download" download>
+          Download Format
+        </a>
+      </div>
+      <div class="import-modal-body">
+        <div class="form-group">
+          <label>Pilih File (Excel / CSV / PDF)</label>
+          <input type="file" name="file_import" accept=".csv,.xlsx,.xls,.ods,.pdf" required>
+          <p class="import-modal-hint">Format yang didukung: CSV, XLSX, XLS, ODS, dan PDF.</p>
+        </div>
+
+        <div class="form-group">
+          <label>Pilih Bahan (Opsional - Untuk Update HET)</label>
+          <select name="bahan_keyword">
+            <option value="">-- Tidak Update HET --</option>
+            <?php mysqli_data_seek($bahan_for_import, 0); while($bi = mysqli_fetch_assoc($bahan_for_import)): ?>
+            <option value="<?= htmlspecialchars($bi['nama_bahan']) ?>"><?= htmlspecialchars($bi['nama_bahan']) ?></option>
+            <?php endwhile; ?>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Masukkan HET/HAP (Opsional)</label>
+          <input type="number" name="het_hap" step="0.01" placeholder="Masukkan HET/HAP">
+        </div>
       </div>
 
-      <div class="form-group">
-        <label>Pilih Bahan (Opsional - Untuk Update HET)</label>
-        <select name="bahan_keyword">
-          <option value="">-- Tidak Update HET --</option>
-          <?php mysqli_data_seek($bahan_for_import, 0); while($bi = mysqli_fetch_assoc($bahan_for_import)): ?>
-          <option value="<?= htmlspecialchars($bi['nama_bahan']) ?>"><?= htmlspecialchars($bi['nama_bahan']) ?></option>
-          <?php endwhile; ?>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Masukkan HET/HAP (Opsional)</label>
-        <input type="number" name="het_hap" step="0.01" placeholder="Masukkan HET/HAP">
-      </div>
-
-      <div class="list-modal-actions">
+      <div class="list-modal-actions import-modal-actions">
         <button type="submit" class="btn-save">Import Data</button>
         <button type="button" class="btn-cancel-modal">Batal</button>
       </div>
@@ -358,9 +371,10 @@ while($row = mysqli_fetch_assoc($data)) {
 <!-- Modal Tambah -->
 <div id="modalTambah" class="list-modal" role="dialog" aria-hidden="true">
     <div class="list-modal-backdrop"></div>
-    <div class="list-modal-box">
-        <h3>Tambah Data Harga</h3>
-        <form method="post" action="../process/list_process.php">
+    <div class="list-modal-box list-entry-modal-box">
+        <h3 class="list-entry-modal-title">Tambah Data Harga</h3>
+        <p class="list-entry-modal-subtitle">Tambahkan data harga bahan pokok dengan format yang sama seperti popup edit member.</p>
+        <form method="post" action="../process/list_process.php" class="list-entry-modal-form">
             <input type="hidden" name="action" value="tambah">
             <?php if ($keyword !== ''): ?><input type="hidden" name="search_redirect" value="<?= htmlspecialchars($keyword) ?>"><?php endif; ?>
             <div class="form-group">
@@ -380,9 +394,9 @@ while($row = mysqli_fetch_assoc($data)) {
                 <label>Tanggal</label>
                 <input type="date" name="tanggal" value="<?= date('Y-m-d') ?>" required>
             </div>
-            <div class="list-modal-actions">
-                <button type="submit" class="btn-save">Simpan</button>
-                <button type="button" class="btn-cancel-modal">Batal</button>
+            <div class="list-modal-actions list-entry-modal-actions">
+                <button type="submit" class="btn-save list-entry-modal-submit">Simpan</button>
+                <button type="button" class="btn-cancel-modal list-entry-modal-cancel">Batal</button>
             </div>
         </form>
     </div>
@@ -391,9 +405,10 @@ while($row = mysqli_fetch_assoc($data)) {
 <!-- Modal Edit -->
 <div id="modalEdit" class="list-modal" role="dialog" aria-hidden="true">
     <div class="list-modal-backdrop"></div>
-    <div class="list-modal-box">
-        <h3>Edit Data Harga</h3>
-        <form method="post" action="../process/list_process.php">
+    <div class="list-modal-box list-entry-modal-box">
+        <h3 class="list-entry-modal-title">Edit Data Harga</h3>
+        <p class="list-entry-modal-subtitle">Perbarui data harga bahan pokok dengan tampilan form yang seragam dengan popup lain.</p>
+        <form method="post" action="../process/list_process.php" class="list-entry-modal-form">
             <input type="hidden" name="action" value="edit">
             <input type="hidden" name="id" id="editId">
             <?php if ($keyword !== ''): ?><input type="hidden" name="search_redirect" value="<?= htmlspecialchars($keyword) ?>"><?php endif; ?>
@@ -409,9 +424,9 @@ while($row = mysqli_fetch_assoc($data)) {
                 <label>Tanggal</label>
                 <input type="date" name="tanggal" id="editTanggal" required>
             </div>
-            <div class="list-modal-actions">
-                <button type="submit" class="btn-save">Simpan</button>
-                <button type="button" class="btn-cancel-modal">Batal</button>
+            <div class="list-modal-actions list-entry-modal-actions">
+                <button type="submit" class="btn-save list-entry-modal-submit">Simpan</button>
+                <button type="button" class="btn-cancel-modal list-entry-modal-cancel">Batal</button>
             </div>
         </form>
     </div>

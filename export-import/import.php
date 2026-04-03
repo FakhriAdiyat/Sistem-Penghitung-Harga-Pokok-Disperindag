@@ -6,6 +6,7 @@ require_once '../includes/role_check.php';
 
 // Ambil semua bahan untuk dropdown
 $bahan = mysqli_query($conn, "SELECT id, nama_bahan FROM bahan_pokok ORDER BY nama_bahan ASC");
+$import_template_url = BASE_URL . 'assets/Format/' . rawurlencode('Format Import Data Bapok.xlsx');
 ?>
 
 <div class="layout">
@@ -25,6 +26,15 @@ $bahan = mysqli_query($conn, "SELECT id, nama_bahan FROM bahan_pokok ORDER BY na
 
                     <h3>Import Harga</h3>
                     <p style="margin-bottom:1rem; color:#555; font-size:0.95rem;">Format file: Excel (.xlsx, .xls), ODS, CSV, atau PDF. Sistem akan mendeteksi kolom Tanggal, Nama Bahan, dan Harga secara otomatis, lalu menghitung statistik dan menyimpan ke database.</p>
+
+                    <div class="import-template-box import-template-box-page">
+                        <div class="import-template-copy">
+                            <p>silahkan unduh format data bapok</p>
+                        </div>
+                        <a href="<?= htmlspecialchars($import_template_url) ?>" class="import-template-download" download>
+                            Download Format
+                        </a>
+                    </div>
 
                     <?php if (isset($_SESSION['import_flash'])): ?>
                         <?php
