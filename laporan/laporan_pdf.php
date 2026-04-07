@@ -42,8 +42,9 @@ function fmt_id_date(DateTime $date): string
     return $d . ' ' . $bulan[$m] . ' ' . $y;
 }
 
-$tanggalAwalInput = trim((string)($_GET['tanggal_awal'] ?? ''));
-$tanggalAkhirInput = trim((string)($_GET['tanggal_akhir'] ?? ''));
+$tanggalLaporanInput = trim((string)($_GET['tanggal_laporan'] ?? ''));
+$tanggalAwalInput = trim((string)($_GET['tanggal_awal'] ?? $tanggalLaporanInput));
+$tanggalAkhirInput = trim((string)($_GET['tanggal_akhir'] ?? $tanggalLaporanInput));
 
 $tanggalAwalObj = DateTime::createFromFormat('Y-m-d', $tanggalAwalInput);
 $tanggalAkhirObj = DateTime::createFromFormat('Y-m-d', $tanggalAkhirInput);
@@ -126,7 +127,14 @@ $summaryRow = $summary ? mysqli_fetch_assoc($summary) : ['total_komoditas' => 0,
 
 $logo2Data = image_data_uri(__DIR__ . '/../assets/img/logo2.jpg');
 
+$dokumentasiImages = [];
+if (isset($_SESSION['dokumentasi_images'])) {
+    $dokumentasiImages = $_SESSION['dokumentasi_images'];
+    unset($_SESSION['dokumentasi_images']); // Clear after use
+}
+
 $css = file_get_contents(__DIR__ . '/laporan.css');
+
 
 $options = new Options();
 $options->set('isRemoteEnabled', true);
@@ -139,5 +147,6 @@ $html = ob_get_clean();
 
 $dompdf->loadHtml($html);
 $dompdf->render();
-$dompdf->stream('Laporan_Harga_' . $tanggalAwal . '_sampai_' . $tanggalAkhir . '_' . date('His') . '.pdf', ['Attachment' => true]);
+$filename = ($tanggalAwal === $tanggalAkhir) ? 'Laporan_Harga_' . $tanggalAwal : 'Laporan_Harga_' . $tanggalAwal . '_sampai_' . $tanggalAkhir;
+$dompdf->stream($filename . '_' . date('His') . '.pdf', ['Attachment' => true]);
 exit;

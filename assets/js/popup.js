@@ -249,7 +249,37 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  document.addEventListener("keydown", function (e) {
+document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") closeEditMemberModal();
   });
 });
+
+// Laporan Format Popup
+function showFormatPopup(date) {
+  const overlay = document.createElement("div");
+  overlay.id = "formatPopupOverlay";
+  overlay.className = "format-popup-overlay";
+  overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:10001;padding:16px;";
+
+  overlay.innerHTML = `
+    <div class="format-popup-card">
+      <h3 style="margin:0 0 8px;font-size:20px;color:#111827;">Pilih Format Laporan</h3>
+      <p style="margin:0 0 24px;color:#64748b;font-size:14px;">Tanggal: <strong>${date}</strong></p>
+      <div class="format-actions" style="display:flex;flex-direction:column;gap:12px;">
+        <a href="laporan_pdf.php?tanggal_awal=${encodeURIComponent(date)}&tanggal_akhir=${encodeURIComponent(date)}" class="format-pdf-btn theme-primary-btn" style="text-decoration:none;">📄 Download PDF</a>
+        <a href="laporan_excel.php?tanggal_laporan=${encodeURIComponent(date)}" class="format-excel-btn theme-primary-btn" style="text-decoration:none;background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:#1d4ed8;">📊 Download Excel</a>
+        <button type="button" id="formatCancel" class="format-cancel-btn" style="border:1px solid #cbd5e1;background:#fff;color:#475569;padding:12px;border-radius:12px;cursor:pointer;font-weight:600;">Batal</button>
+      </div>
+    </div>
+  `;
+
+  const close = () => overlay.remove();
+  overlay.addEventListener("click", (e) => { if (e.target === overlay) close(); });
+  document.body.appendChild(overlay);
+
+  document.getElementById("formatCancel").addEventListener("click", close);
+}
+
+// Auto-trigger from laporan page - integrated into existing DOMContentLoaded
+
+

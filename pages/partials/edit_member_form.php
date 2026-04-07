@@ -25,7 +25,7 @@ if (!$data) {
 
 <p class="member-edit-modal-subtitle">Ubah data akun member</p>
 
-<form action="<?= BASE_URL ?>process/member_process.php" method="POST" data-confirm-action="edit-member">
+<form action="<?= BASE_URL ?>process/member_process.php" method="POST" data-confirm-action="edit-member" autocomplete="off">
     <input type="hidden" name="id" value="<?= $data['id'] ?>">
 
     <div class="form-group">
@@ -36,7 +36,7 @@ if (!$data) {
     <div class="form-group">
         <label>Password Baru</label>
         <div class="password-wrapper member-edit-password-wrap">
-            <input type="password" name="password" placeholder="Password baru">
+            <input type="password" name="password" placeholder="Password baru" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');">
             <span class="toggle-password" onclick="togglePassword(this)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="gray" viewBox="0 0 24 24">
                     <path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>

@@ -1,226 +1,205 @@
 document.addEventListener("DOMContentLoaded", function () {
-  var wrap = document.querySelector(".list-table-wrap");
-  var popup = document.getElementById("rowActionPopup");
+  var modalImport = document.getElementById("modalImport");
   var modalTambah = document.getElementById("modalTambah");
   var modalEdit = document.getElementById("modalEdit");
-  var supportsHover =
-    window.matchMedia &&
-    window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-
-  var checkAll = document.getElementById("checkAll");
-  var btnHapusBanyak = document.getElementById("btnHapusBanyak");
-  var modalHapusBanyak = document.getElementById("modalHapusBanyak");
-  var modalImport = document.getElementById("modalImport");
-  var modalExport = document.getElementById("modalExport");
   var btnImportPopup = document.getElementById("btnImportPopup");
-  var btnExportPopup = document.getElementById("btnExportPopup");
-  var hapusBanyakText = document.getElementById("hapusBanyakText");
-  var confirmHapusBanyak = document.getElementById("confirmHapusBanyak");
-  var formHapusBanyak = document.getElementById("formHapusBanyak");
-
+  var popup = document.getElementById("rowActionPopup");
+  var tableScroll = document.querySelector(".list-table-scroll");
   var currentRow = null;
-  var popupRow = null;
+  var popupHideTimer = null;
 
-  function allDataRows() {
-    return document.querySelectorAll(".list-data-row");
+  function openModal(modal) {
+    if (!modal) return;
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden", "false");
   }
 
-  function checkedRows() {
-    return document.querySelectorAll(".row-check:checked");
+  function closeModal(modal) {
+    if (!modal) return;
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden", "true");
   }
 
-  function updateBulkDeleteButton() {
-    if (!btnHapusBanyak) return;
-    var hasSelection = checkedRows().length > 0;
-    btnHapusBanyak.disabled = !hasSelection;
-    btnHapusBanyak.classList.toggle("active", hasSelection);
+  function closeAllModals() {
+    document.querySelectorAll(".list-modal").forEach(function (modal) {
+      closeModal(modal);
+    });
+  }
+
+  function clearPopupHideTimer() {
+    if (popupHideTimer) {
+      window.clearTimeout(popupHideTimer);
+      popupHideTimer = null;
+    }
   }
 
   function hidePopup() {
-    if (popup) {
-      popup.classList.remove("show");
-      popup.setAttribute("aria-hidden", "true");
-    }
-    if (popupRow) {
-      popupRow.remove();
-      popupRow = null;
-    }
-    allDataRows().forEach(function (row) {
-      row.classList.remove("selected");
-    });
+    clearPopupHideTimer();
+    if (!popup) return;
+    popup.classList.remove("show");
+    popup.setAttribute("aria-hidden", "true");
     currentRow = null;
   }
 
-  function showPopupBelowRow(row) {
-    if (!popup || !row || !row.parentNode) return;
-    if (currentRow === row && popup.classList.contains("show")) return;
+  function scheduleHidePopup() {
+    clearPopupHideTimer();
+    popupHideTimer = window.setTimeout(hidePopup, 120);
+  }
 
-    hidePopup();
+  function positionPopup(row) {
+    if (!popup || !row) return;
+    var rect = row.getBoundingClientRect();
+    var top = rect.top + 12;
+    var left = rect.left + 96;
+
+    popup.style.top = top + "px";
+    popup.style.left = left + "px";
+  }
+
+  function showPopup(row) {
+    if (!popup || !row) return;
+    clearPopupHideTimer();
     currentRow = row;
-    row.classList.add("selected");
-
-    popupRow = document.createElement("tr");
-    popupRow.className = "row-popup-row";
-
-    var popupCell = document.createElement("td");
-    popupCell.className = "row-popup-cell";
-    popupCell.colSpan = row.children.length;
-
-    popupCell.appendChild(popup);
-    popupRow.appendChild(popupCell);
-    row.parentNode.insertBefore(popupRow, row.nextSibling);
-
+    positionPopup(row);
     popup.classList.add("show");
     popup.setAttribute("aria-hidden", "false");
   }
 
-  if (wrap) {
-    if (supportsHover) {
-      wrap.addEventListener("mouseover", function (e) {
-        var row = e.target.closest(".list-data-row");
-        if (row) {
-          showPopupBelowRow(row);
-        }
-      });
+  function setTambahValues(row) {
+    var bahanSelect = document.getElementById("addBahanSelect");
+    var tanggalInput = document.getElementById("addTanggal");
+    var hargaInput = document.getElementById("addHarga");
 
-      wrap.addEventListener("mouseleave", function (e) {
-        if (!e.relatedTarget || !wrap.contains(e.relatedTarget)) {
-          hidePopup();
-        }
-      });
-    } else {
-      wrap.addEventListener("click", function (e) {
-        var row = e.target.closest(".list-data-row");
-
-        if (row) {
-          e.preventDefault();
-          if (currentRow === row && popup && popup.classList.contains("show")) {
-            hidePopup();
-            return;
-          }
-          showPopupBelowRow(row);
-        } else if (!e.target.closest(".row-action-popup")) {
-          hidePopup();
-        }
-      });
+    if (!row) return;
+    if (bahanSelect) {
+      bahanSelect.value = row.getAttribute("data-bahan-id") || "";
+    }
+    if (tanggalInput) {
+      tanggalInput.value = row.getAttribute("data-latest-tanggal") || tanggalInput.value;
+    }
+    if (hargaInput) {
+      hargaInput.value = "";
     }
   }
 
-  document.addEventListener("click", function (e) {
-    if (
-      popup &&
-      popup.classList.contains("show") &&
-      !e.target.closest(".list-table-wrap")
-    ) {
-      hidePopup();
+  function setEditValues(row) {
+    var editId = document.getElementById("editId");
+    var editBahanNama = document.getElementById("editBahanNama");
+    var editHarga = document.getElementById("editHarga");
+    var editTanggal = document.getElementById("editTanggal");
+
+    if (!row) return false;
+    var latestId = row.getAttribute("data-latest-id") || "";
+    if (!latestId) {
+      return false;
     }
-  });
 
-  function openModalTambah() {
-    if (!modalTambah) return;
-    var sel = modalTambah.querySelector('select[name="bahan_id"]');
-    if (sel && currentRow) {
-      var bid = currentRow.getAttribute("data-bahan-id");
-      sel.value = bid || "";
-    }
-    modalTambah.classList.add("show");
-    modalTambah.setAttribute("aria-hidden", "false");
-    hidePopup();
+    if (editId) editId.value = latestId;
+    if (editBahanNama) editBahanNama.value = row.getAttribute("data-bahan-nama") || "";
+    if (editHarga) editHarga.value = row.getAttribute("data-latest-harga") || "";
+    if (editTanggal) editTanggal.value = row.getAttribute("data-latest-tanggal") || "";
+
+    return true;
   }
 
-  function openModalEdit(row) {
-    if (!row || !modalEdit) return;
-    document.getElementById("editId").value = row.getAttribute("data-id");
-    document.getElementById("editBahanNama").value =
-      row.getAttribute("data-bahan-nama");
-    document.getElementById("editHarga").value = row.getAttribute("data-harga");
-    document.getElementById("editTanggal").value =
-      row.getAttribute("data-tanggal");
-    modalEdit.classList.add("show");
-    modalEdit.setAttribute("aria-hidden", "false");
-    hidePopup();
-  }
+  function toggleCommodityGroup(trigger) {
+    if (!trigger) return;
+    var group = trigger.closest("[data-commodity-group]");
+    if (!group) return;
 
-  if (popup) {
-    popup.addEventListener("click", function (e) {
-      var btn = e.target.closest(".row-action-btn");
-      if (!btn || !currentRow) return;
-      var action = btn.getAttribute("data-action");
-      if (action === "tambah") openModalTambah();
-      else if (action === "edit") openModalEdit(currentRow);
-    });
-  }
+    var expanded = group.classList.contains("is-expanded");
+    group.classList.toggle("is-expanded", !expanded);
+    group.classList.toggle("is-collapsed", expanded);
+    trigger.setAttribute("aria-expanded", expanded ? "false" : "true");
 
-  document.querySelectorAll(".btn-cancel-modal").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      document.querySelectorAll(".list-modal").forEach(function (modal) {
-        modal.classList.remove("show");
-        modal.setAttribute("aria-hidden", "true");
-      });
-    });
-  });
-
-  document.querySelectorAll(".list-modal-backdrop").forEach(function (backdrop) {
-    backdrop.addEventListener("click", function () {
-      document.querySelectorAll(".list-modal").forEach(function (modal) {
-        modal.classList.remove("show");
-        modal.setAttribute("aria-hidden", "true");
-      });
-    });
-  });
-
-  if (checkAll) {
-    checkAll.addEventListener("change", function () {
-      document.querySelectorAll(".row-check").forEach(function (cb) {
-        cb.checked = checkAll.checked;
-      });
-      updateBulkDeleteButton();
-    });
-  }
-
-  document.querySelectorAll(".row-check").forEach(function (cb) {
-    cb.addEventListener("click", function (e) {
-      e.stopPropagation();
-      updateBulkDeleteButton();
-
-      if (checkAll) {
-        var total = document.querySelectorAll(".row-check").length;
-        var selected = checkedRows().length;
-        checkAll.checked = total > 0 && total === selected;
-      }
-    });
-  });
-
-  if (btnHapusBanyak && modalHapusBanyak && formHapusBanyak) {
-    btnHapusBanyak.addEventListener("click", function () {
-      var selected = checkedRows().length;
-      if (selected < 1) return;
-      hapusBanyakText.innerHTML =
-        "Yakin ingin menghapus <b>" + selected + "</b> data terpilih?";
-      modalHapusBanyak.classList.add("show");
-      modalHapusBanyak.setAttribute("aria-hidden", "false");
-    });
-  }
-
-  if (confirmHapusBanyak && formHapusBanyak) {
-    confirmHapusBanyak.addEventListener("click", function () {
-      formHapusBanyak.submit();
+    group.querySelectorAll("[data-metric-row]").forEach(function (row) {
+      row.setAttribute("aria-hidden", expanded ? "true" : "false");
     });
   }
 
   if (btnImportPopup && modalImport) {
     btnImportPopup.addEventListener("click", function () {
-      modalImport.classList.add("show");
-      modalImport.setAttribute("aria-hidden", "false");
+      openModal(modalImport);
     });
   }
 
-  if (btnExportPopup && modalExport) {
-    btnExportPopup.addEventListener("click", function () {
-      modalExport.classList.add("show");
-      modalExport.setAttribute("aria-hidden", "false");
+  document.querySelectorAll(".btn-cancel-modal").forEach(function (button) {
+    button.addEventListener("click", function () {
+      closeAllModals();
+    });
+  });
+
+  document.querySelectorAll(".list-modal-backdrop").forEach(function (backdrop) {
+    backdrop.addEventListener("click", function () {
+      closeAllModals();
+    });
+  });
+
+  document.querySelectorAll(".list-commodity-toggle").forEach(function (button) {
+    button.addEventListener("click", function () {
+      toggleCommodityGroup(button);
+    });
+  });
+
+  document.querySelectorAll(".list-data-row").forEach(function (row) {
+    row.addEventListener("mouseenter", function () {
+      showPopup(row);
+    });
+    row.addEventListener("mouseleave", function () {
+      scheduleHidePopup();
+    });
+  });
+
+  if (popup) {
+    popup.addEventListener("mouseenter", function () {
+      clearPopupHideTimer();
+    });
+
+    popup.addEventListener("mouseleave", function () {
+      scheduleHidePopup();
+    });
+
+    popup.addEventListener("click", function (event) {
+      var button = event.target.closest(".row-action-btn");
+      if (!button || !currentRow) return;
+
+      var action = button.getAttribute("data-action");
+      if (action === "tambah") {
+        setTambahValues(currentRow);
+        openModal(modalTambah);
+      } else if (action === "edit") {
+        if (setEditValues(currentRow)) {
+          openModal(modalEdit);
+        }
+      }
+      hidePopup();
     });
   }
 
-  updateBulkDeleteButton();
+  if (tableScroll) {
+    tableScroll.addEventListener("scroll", function () {
+      if (currentRow && popup && popup.classList.contains("show")) {
+        positionPopup(currentRow);
+      }
+    });
+  }
+
+  window.addEventListener("scroll", function () {
+    if (currentRow && popup && popup.classList.contains("show")) {
+      positionPopup(currentRow);
+    }
+  });
+
+  document.addEventListener("click", function (event) {
+    if (popup && popup.classList.contains("show") && !event.target.closest(".row-action-popup") && !event.target.closest(".list-data-row")) {
+      hidePopup();
+    }
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      closeAllModals();
+      hidePopup();
+    }
+  });
 });

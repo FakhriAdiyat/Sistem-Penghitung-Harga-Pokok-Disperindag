@@ -7,6 +7,11 @@ require_once '../includes/role_check.php';
 // Ambil semua bahan untuk dropdown
 $bahan = mysqli_query($conn, "SELECT id, nama_bahan FROM bahan_pokok ORDER BY nama_bahan ASC");
 $import_template_url = BASE_URL . 'assets/Format/' . rawurlencode('Format Import Data Bapok.xlsx');
+$importFlash = null;
+if (isset($_SESSION['import_flash']) && is_array($_SESSION['import_flash'])) {
+    $importFlash = $_SESSION['import_flash'];
+    unset($_SESSION['import_flash']);
+}
 ?>
 
 <div class="layout">
@@ -18,31 +23,44 @@ $import_template_url = BASE_URL . 'assets/Format/' . rawurlencode('Format Import
         <?php require_once '../includes/header.php'; ?>
 
         <div class="content">
-            <div class="container">    
-                <h1>Import Data Harga</h1>
-                <p class="subtitle">Upload data harga bahan pokok. Semua format didukung selama isi file memuat: <strong>Tanggal</strong>, <strong>Nama Bahan</strong>, dan <strong>Harga</strong> (urutan kolom boleh berbeda).</p>
+            <div class="container theme-page-shell">
+                <div class="theme-page-header">
+                    <div class="theme-page-title">
+                        <h1>Import Data Harga</h1>
+                        <p class="subtitle">Upload data harga dengan tema dan tata letak yang sama seperti halaman List Data.</p>
+                    </div>
+                    <div class="theme-page-badge">
+                        <span>Format</span>
+                        <strong>Harian & Bulanan</strong>
+                    </div>
+                </div>
 
-                <div class="form-box">
+                <div class="theme-note-card">
+                    Sistem mendukung format harian dengan kolom <strong>Tanggal</strong>, <strong>Nama Bahan</strong>, dan <strong>Harga</strong>, serta laporan bulanan perwilayah dengan kolom tanggal <strong>1-31</strong>.
+                </div>
 
-                    <h3>Import Harga</h3>
-                    <p style="margin-bottom:1rem; color:#555; font-size:0.95rem;">Format file: Excel (.xlsx, .xls), ODS, CSV, atau PDF. Sistem akan mendeteksi kolom Tanggal, Nama Bahan, dan Harga secara otomatis, lalu menghitung statistik dan menyimpan ke database.</p>
+                <div class="theme-panel">
+                    <div class="theme-section-head">
+                        <div>
+                            <h2>Import Harga</h2>
+                            <p>Format file: Excel (.xlsx, .xls), ODS, CSV, atau PDF. Sistem akan membaca dua pola utama: format harian biasa dan laporan bulanan perwilayah.</p>
+                        </div>
+                    </div>
 
                     <div class="import-template-box import-template-box-page">
                         <div class="import-template-copy">
-                            <p>silahkan unduh format data bapok</p>
+                            <p>Silakan unduh format data bapok sebelum melakukan import.</p>
                         </div>
                         <a href="<?= htmlspecialchars($import_template_url) ?>" class="import-template-download" download>
                             Download Format
                         </a>
                     </div>
 
-                    <?php if (isset($_SESSION['import_flash'])): ?>
+                    <?php if ($importFlash): ?>
                         <?php
-                            $flash = $_SESSION['import_flash'];
-                            unset($_SESSION['import_flash']);
-                            $type = ($flash['type'] ?? 'success') === 'error' ? 'error' : 'success';
-                            $title = (string) ($flash['title'] ?? '');
-                            $message = (string) ($flash['message'] ?? '');
+                            $type = ($importFlash['type'] ?? 'success') === 'error' ? 'error' : 'success';
+                            $title = (string) ($importFlash['title'] ?? '');
+                            $message = (string) ($importFlash['message'] ?? '');
                         ?>
                         <div class="popup-overlay" role="alert" aria-live="assertive">
                             <div class="popup-card <?= $type === 'success' ? 'popup-card-success' : 'popup-card-error' ?>" role="document">
@@ -62,46 +80,39 @@ $import_template_url = BASE_URL . 'assets/Format/' . rawurlencode('Format Import
                         </div>
                     <?php endif; ?>
 
-                    <form action="import_process.php" method="post" enctype="multipart/form-data">
-
-                        <div class="form-group">
-                            <label>Pilih File (Excel / CSV / PDF)</label>
+                    <form action="../process/import_process.php" method="post" enctype="multipart/form-data" class="theme-form-grid theme-form-grid-single">
+                        <label class="theme-field">
+                            <span>Pilih File</span>
                             <input type="file" name="file_import" accept=".csv,.xlsx,.xls,.ods,.pdf" required>
-                        </div>
+                        </label>
 
-                        <div class="form-group">
-                            <label>Pilih Bahan (Opsional - Untuk Update HET)</label>
+                        <label class="theme-field">
+                            <span>Pilih Bahan</span>
                             <select name="bahan_keyword">
                                 <option value="">-- Tidak Update HET --</option>
                                 <?php while($b = mysqli_fetch_assoc($bahan)) { ?>
-                                    <option value="<?= $b['nama_bahan'] ?>">
-                                        <?= $b['nama_bahan'] ?>
+                                    <option value="<?= htmlspecialchars($b['nama_bahan']) ?>">
+                                        <?= htmlspecialchars($b['nama_bahan']) ?>
                                     </option>
                                 <?php } ?>
                             </select>
-                        </div>
+                        </label>
 
-                        <div class="form-group">
-                            <label>Masukkan HET/HAP (Opsional)</label>
+                        <label class="theme-field">
+                            <span>HET / HAP</span>
                             <input type="number" name="het_hap" step="0.01" placeholder="Masukkan HET/HAP">
-                        </div>
+                        </label>
 
-                        <button type="submit" class="btn-save">Import Data</button>
-
+                        <button type="submit" class="theme-primary-btn">Import Data</button>
                     </form>
                 </div>
 
-                <hr style="margin:25px 0; border:none; border-top:2px solid #e5e7eb;">
-
-                <p class="subtitle" style="margin:0;">
-                    Tips: kalau Anda mengisi <strong>Pilih Bahan</strong> dan <strong>HET/HAP</strong>, maka HET/HAP bahan tersebut akan ikut ter-update saat import.
-                </p>
-
+                <div class="theme-note-card">
+                    Tips: kalau Anda mengisi <strong>Pilih Bahan</strong> dan <strong>HET/HAP</strong>, maka HET/HAP bahan tersebut akan ikut ter-update saat import. Untuk laporan bulanan, pastikan kolom tanggal 1-31 terisi angka harga.
+                </div>
             </div>
         </div>
 
     </div>
 </div>
-
-<script src="<?= BASE_URL ?>assets/js/popup.js"></script>
 <?php require_once '../includes/footer.php'; ?>

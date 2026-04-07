@@ -116,5 +116,20 @@ while ($row = mysqli_fetch_assoc($data)):
     </tbody>
 </table>
 
+<div class="dokumentasi-section">
+    <div class="dokumentasi-title">Dokumentasi Kunjungan</div>
+    <?php if (isset($dokumentasiImages) && is_array($dokumentasiImages)): ?>
+        <div class="dokumentasi-images">
+            <?php foreach ($dokumentasiImages as $imgPath): 
+                $imgData = image_data_uri(__DIR__ . '/../' . $imgPath);
+                if ($imgData): ?>
+                    <img src="<?= $imgData ?>" alt="Dokumentasi" class="dok-image">
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+</div>
+
 </body>
+
 </html>

@@ -1,5 +1,13 @@
 console.log("MAIN JS OK");
 
+function clearAutofillFields(form) {
+  if (!form) return;
+
+  form.querySelectorAll("[data-autofill-field]").forEach((field) => {
+    field.value = "";
+  });
+}
+
 function togglePassword(trigger) {
   let input = null;
   let icon = null;
@@ -33,3 +41,11 @@ function togglePassword(trigger) {
         `;
   }
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("form[data-clear-autofill]").forEach((form) => {
+    clearAutofillFields(form);
+    window.requestAnimationFrame(() => clearAutofillFields(form));
+    window.setTimeout(() => clearAutofillFields(form), 120);
+  });
+});

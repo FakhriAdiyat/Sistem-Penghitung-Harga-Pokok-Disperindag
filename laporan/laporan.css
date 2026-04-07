@@ -90,3 +90,31 @@ th {
   color: #15803d;
   font-weight: bold;
 }
+
+.dokumentasi-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.dokumentasi-title {
+  font-weight: bold;
+  font-size: 11px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.dokumentasi-images {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+}
+
+.dok-image {
+  max-width: 120px;
+  max-height: 80px;
+  width: auto;
+  height: auto;
+  border: 1px solid #000;
+}
+

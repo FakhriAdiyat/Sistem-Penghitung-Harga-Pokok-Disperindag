@@ -116,67 +116,98 @@ $turun = (int)($status['turun'] ?? 0);
 $stabil = (int)($status['stabil'] ?? 0);
 ?>
 
-<?php require_once '../includes/header.php'; ?>
-<?php require_once '../includes/sidebar.php'; ?>
+<div class="layout">
 
-<div class="content">
-    <div class="container">
-        <h1>Fluktuasi Harga Pangan</h1>
-        <p class="subtitle">Monitor perubahan harga berdasarkan komoditas dan rentang tanggal.</p>
+    <?php require_once '../includes/sidebar.php'; ?>
 
-        <div class="statistik">
-            <div class="stat-card-naik">
-                <h2><?= $naik ?></h2>
-                <p>Harga Naik</p>
+    <div style="flex:1; display:flex; flex-direction:column;">
+
+        <?php require_once '../includes/header.php'; ?>
+
+        <div class="content">
+            <div class="container theme-page-shell">
+                <div class="theme-page-header">
+                    <div class="theme-page-title">
+                        <h1>Dashboard Harga</h1>
+                        <p class="subtitle">Monitor perubahan harga pangan dengan tampilan yang konsisten seperti halaman List Data.</p>
+                    </div>
+                    <div class="theme-page-badge">
+                        <span>Rentang Aktif</span>
+                        <strong><?= htmlspecialchars(date('d M Y', strtotime($tanggal_dari))) ?> - <?= htmlspecialchars(date('d M Y', strtotime($tanggal_sampai))) ?></strong>
+                    </div>
+                </div>
+
+                <div class="theme-stat-grid">
+                    <article class="theme-stat-card is-up">
+                        <span>Status</span>
+                        <strong><?= $naik ?></strong>
+                        <p>Komoditas dengan harga naik</p>
+                    </article>
+                    <article class="theme-stat-card is-stable">
+                        <span>Status</span>
+                        <strong><?= $stabil ?></strong>
+                        <p>Komoditas dengan harga stabil</p>
+                    </article>
+                    <article class="theme-stat-card is-down">
+                        <span>Status</span>
+                        <strong><?= $turun ?></strong>
+                        <p>Komoditas dengan harga turun</p>
+                    </article>
+                </div>
+
+                <div class="theme-panel">
+                    <div class="theme-section-head">
+                        <div>
+                            <h2>Filter Grafik</h2>
+                            <p>Pilih komoditas, jenis periode, dan rentang tanggal untuk memperbarui grafik.</p>
+                        </div>
+                    </div>
+
+                    <form method="GET" class="theme-form-grid">
+                        <label class="theme-field">
+                            <span>Komoditas</span>
+                            <select name="bahan_id" required>
+                                <?php foreach ($bahan_list as $b): ?>
+                                    <option value="<?= (int)$b['id'] ?>" <?= ((int)$b['id'] === $bahan_id) ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($b['nama_bahan']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </label>
+
+                        <label class="theme-field">
+                            <span>Periode</span>
+                            <select name="periode">
+                                <option value="harian" <?= $periode === 'harian' ? 'selected' : '' ?>>Perhari</option>
+                                <option value="mingguan" <?= $periode === 'mingguan' ? 'selected' : '' ?>>Perminggu</option>
+                                <option value="bulanan" <?= $periode === 'bulanan' ? 'selected' : '' ?>>Perbulan</option>
+                            </select>
+                        </label>
+
+                        <label class="theme-field">
+                            <span>Tanggal Dari</span>
+                            <input type="date" name="tanggal_dari" value="<?= htmlspecialchars($tanggal_dari) ?>" required>
+                        </label>
+
+                        <label class="theme-field">
+                            <span>Tanggal Sampai</span>
+                            <input type="date" name="tanggal_sampai" value="<?= htmlspecialchars($tanggal_sampai) ?>" required>
+                        </label>
+
+                        <button type="submit" class="theme-primary-btn" aria-label="Cari">Terapkan</button>
+                    </form>
+                </div>
+
+                <div class="theme-panel dashboard-chart-box">
+                    <div class="theme-section-head">
+                        <div>
+                            <h2>Grafik Pergerakan Harga</h2>
+                            <p>Visual pergerakan harga komoditas berdasarkan filter yang dipilih.</p>
+                        </div>
+                    </div>
+                    <canvas id="dashboardChart"></canvas>
+                </div>
             </div>
-            <div class="stat-card-stabil">
-                <h2><?= $stabil ?></h2>
-                <p>Harga Stabil</p>
-            </div>
-            <div class="stat-card-turun">
-                <h2><?= $turun ?></h2>
-                <p>Harga Turun</p>
-            </div>
-        </div>
-
-        <div class="dashboard-filter-card">
-            <form method="GET" class="dashboard-filter-form">
-                <div class="dash-field">
-                    <label>Komoditas</label>
-                    <select name="bahan_id" required>
-                        <?php foreach ($bahan_list as $b): ?>
-                            <option value="<?= (int)$b['id'] ?>" <?= ((int)$b['id'] === $bahan_id) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($b['nama_bahan']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <div class="dash-field">
-                    <label>Periode</label>
-                    <select name="periode">
-                        <option value="harian" <?= $periode === 'harian' ? 'selected' : '' ?>>Perhari</option>
-                        <option value="mingguan" <?= $periode === 'mingguan' ? 'selected' : '' ?>>Perminggu</option>
-                        <option value="bulanan" <?= $periode === 'bulanan' ? 'selected' : '' ?>>Perbulan</option>
-                    </select>
-                </div>
-
-                <div class="dash-field">
-                    <label>Dari</label>
-                    <input type="date" name="tanggal_dari" value="<?= htmlspecialchars($tanggal_dari) ?>" required>
-                </div>
-
-                <div class="dash-field">
-                    <label>Sampai</label>
-                    <input type="date" name="tanggal_sampai" value="<?= htmlspecialchars($tanggal_sampai) ?>" required>
-                </div>
-
-                <button type="submit" class="dash-search-btn" aria-label="Cari">Cari</button>
-            </form>
-        </div>
-
-        <div class="chart-container dashboard-chart-box">
-            <canvas id="dashboardChart"></canvas>
         </div>
     </div>
 </div>

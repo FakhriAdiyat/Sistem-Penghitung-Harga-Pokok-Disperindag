@@ -5,7 +5,13 @@ require_once '../includes/update_statistik_harga.php';
 
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
 $search = $_POST['search_redirect'] ?? $_GET['search'] ?? '';
-$redirect = 'list.php' . ($search !== '' ? '?search=' . urlencode($search) : '');
+$returnQuery = trim((string) ($_POST['return_query'] ?? $_GET['return_query'] ?? ''));
+$redirect = 'list.php';
+if ($returnQuery !== '') {
+    $redirect .= '?' . ltrim($returnQuery, '?&');
+} elseif ($search !== '') {
+    $redirect .= '?search=' . urlencode($search);
+}
 
 function redirect_with(string $base, string $query = ''): void {
     // Redirect ke ../pages/ dari folder process

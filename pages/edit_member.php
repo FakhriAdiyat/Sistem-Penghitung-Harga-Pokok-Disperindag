@@ -35,44 +35,53 @@ if (!$data) {
 
         <!-- CONTENT -->
         <div class="content">
-            <div class="container">
+            <div class="container theme-page-shell">
+                <div class="theme-page-header">
+                    <div class="theme-page-title">
+                        <h1>Edit Member</h1>
+                        <p class="subtitle">Perbarui data akun dengan tampilan yang seragam bersama halaman lainnya.</p>
+                    </div>
+                    <div class="theme-page-badge">
+                        <span>User</span>
+                        <strong><?= htmlspecialchars($data['username']) ?></strong>
+                    </div>
+                </div>
 
-                <h1>Edit Member</h1>
-                <p class="subtitle">Ubah data akun member</p>
+                <div class="theme-panel" style="max-width:720px;">
+                    <div class="theme-section-head">
+                        <div>
+                            <h2>Form Edit Member</h2>
+                            <p>Ubah username, password, atau role sesuai kebutuhan.</p>
+                        </div>
+                    </div>
 
-                <div class="form-box">
-
-                    <form action="<?= BASE_URL ?>process/member_process.php" method="POST" data-confirm-action="edit-member">
-
+                    <form action="<?= BASE_URL ?>process/member_process.php" method="POST" data-confirm-action="edit-member" class="theme-form-grid theme-form-grid-single" autocomplete="off">
                         <input type="hidden" name="id" value="<?= $data['id'] ?>">
 
-                        <div class="form-group">
-                            <label>Username</label>
-                            <input type="text" name="username" 
-                                   value="<?= htmlspecialchars($data['username']) ?>" required>
+                        <label class="theme-field">
+                            <span>Username</span>
+                            <input type="text" name="username" value="<?= htmlspecialchars($data['username']) ?>" required>
+                        </label>
+
+                        <div class="theme-field">
+                            <span>Password Baru</span>
+                            <input type="password" name="password" placeholder="Kosongkan jika tidak ingin mengubah password" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');">
                         </div>
 
-                        <div class="form-group">
-                            <label>Password Baru</label>
-                            <input type="password" name="password">
-                            <small style="color:gray;">Kosongkan jika tidak ingin mengubah password</small>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Role</label>
+                        <label class="theme-field">
+                            <span>Role</span>
                             <select name="role" required>
                                 <option value="member" <?= $data['role']=='member'?'selected':'' ?>>Member</option>
                                 <option value="admin" <?= $data['role']=='admin'?'selected':'' ?>>Admin</option>
                             </select>
+                        </label>
+
+                        <div class="theme-action-row" style="margin-top:0;">
+                            <button type="submit" name="update" class="theme-primary-btn">Update</button>
+                            <a href="member.php" class="theme-secondary-btn">Kembali</a>
                         </div>
-
-                        <button type="submit" name="update" class="btn-save">Update</button>
-                        <a href="member.php" class="btn-cancel">Kembali</a>
-
                     </form>
-
                 </div>
-
             </div>
         </div>
 

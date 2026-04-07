@@ -10,6 +10,10 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 $period = $_GET['period'] ?? '';
 $period = is_string($period) ? strtolower(trim($period)) : '';
+$search = trim((string) ($_GET['search'] ?? ''));
+$searchSafe = mysqli_real_escape_string($conn, $search);
+$startDateParam = trim((string) ($_GET['start_date'] ?? ''));
+$endDateParam = trim((string) ($_GET['end_date'] ?? ''));
 
 // Anchor periode export ke tanggal data terbaru (biar export mingguan/bulanan tidak kosong
 // kalau data terakhir bukan "hari ini"). Fallback ke hari ini kalau tabel kosong.
@@ -27,21 +31,37 @@ if ($maxRes) {
     }
 }
 
-if ($period === 'weekly') {
-    $start = (clone $today)->modify('-6 days'); // inklusif: total 7 hari
-    $end = (clone $today);
-    $label = 'mingguan';
-} elseif ($period === 'monthly') {
-    $start = new DateTime($today->format('Y-m-01'));
-    $end = (clone $today);
-    $label = 'bulanan';
-} elseif ($period === 'yearly') {
-    $start = new DateTime($today->format('Y-01-01'));
-    $end = (clone $today);
-    $label = 'tahunan';
-} else {
-    header("Location: ../export-import/export.php");
-    exit;
+if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $startDateParam) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $endDateParam)) {
+    try {
+        $start = new DateTime($startDateParam);
+        $end = new DateTime($endDateParam);
+        if ($start > $end) {
+            [$start, $end] = [$end, $start];
+        }
+        $label = 'periode';
+    } catch (Exception $e) {
+        $start = null;
+        $end = null;
+    }
+}
+
+if (!isset($start, $end)) {
+    if ($period === 'weekly') {
+        $start = (clone $today)->modify('-6 days'); // inklusif: total 7 hari
+        $end = (clone $today);
+        $label = 'mingguan';
+    } elseif ($period === 'monthly') {
+        $start = new DateTime($today->format('Y-m-01'));
+        $end = (clone $today);
+        $label = 'bulanan';
+    } elseif ($period === 'yearly') {
+        $start = new DateTime($today->format('Y-01-01'));
+        $end = (clone $today);
+        $label = 'tahunan';
+    } else {
+        header("Location: ../export-import/export.php");
+        exit;
+    }
 }
 
 $startStr = $start->format('Y-m-d');
@@ -68,6 +88,7 @@ if ($pakai_struktur_baru) {
         FROM harga h
         JOIN bahan_pokok b ON h.bahan_id = b.id
         WHERE h.tanggal BETWEEN '$startStr' AND '$endStr'
+          AND b.nama_bahan LIKE '%$searchSafe%'
         ORDER BY h.tanggal ASC, b.nama_bahan ASC
     "
     );
@@ -90,6 +111,7 @@ if ($pakai_struktur_baru) {
         FROM harga h
         JOIN bahan_pokok b ON h.bahan_id = b.id
         WHERE h.tanggal BETWEEN '$startStr' AND '$endStr'
+          AND b.nama_bahan LIKE '%$searchSafe%'
         ORDER BY h.tanggal ASC, b.nama_bahan ASC
     "
     );
