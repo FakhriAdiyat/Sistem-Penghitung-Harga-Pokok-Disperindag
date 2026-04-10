@@ -13,7 +13,7 @@ if (isset($_GET['err'])) {
     if ($_GET['err'] === 'no_data') {
         $errorMessage = 'Tidak ada data harga untuk tanggal yang dipilih.';
     } elseif ($_GET['err'] === 'template_missing') {
-        $errorMessage = 'Template laporan Excel tidak ditemukan.';
+        $errorMessage = 'Template laporan tidak ditemukan.';
     } else {
         $errorMessage = 'Laporan belum bisa diunduh. Coba lagi.';
     }
@@ -33,7 +33,7 @@ if (isset($_GET['err'])) {
                 <div class="theme-page-header">
                     <div class="theme-page-title">
                         <h1>Laporan Harga</h1>
-                        <p class="subtitle">Unduh laporan Excel berdasarkan template resmi dengan satu tanggal laporan.</p>
+                        <p class="subtitle">Unduh laporan berdasarkan template resmi dalam format Excel atau PDF.</p>
                     </div>
                 </div>
 
@@ -49,7 +49,7 @@ if (isset($_GET['err'])) {
                         <p class="list-flash-msg error"><?= htmlspecialchars($errorMessage) ?></p>
                     <?php endif; ?>
 
-<form id="laporan-form" method="GET" action="laporan_excel.php" class="theme-form-grid theme-form-grid-single">
+                    <form id="laporan-form" method="GET" action="laporan_excel.php" class="theme-form-grid theme-form-grid-single">
                         <label class="theme-field" for="tanggal_laporan">
                             <span>Tanggal Laporan</span>
                             <input
@@ -61,15 +61,22 @@ if (isset($_GET['err'])) {
                             >
                         </label>
                         <div style="grid-column: 1">
-                            <button type="button" id="download-btn" class="theme-primary-btn" style="margin-top: 16px; width: 100%;">📥 Download Laporan</button>
+                            <div style="display:grid; gap:12px; margin-top:16px;">
+                                <button type="submit" id="download-excel-btn" class="theme-primary-btn" style="width: 100%;">
+                                    Download Excel
+                                </button>
+                                <button type="submit" formaction="laporan_pdf.php" id="download-pdf-btn" class="theme-primary-btn" style="width: 100%; background:linear-gradient(135deg,#dbeafe,#bfdbfe); color:#1d4ed8;">
+                                    Download PDF
+                                </button>
+                            </div>
                         </div>
                     </form>
 
-<p class="subtitle" style="margin:16px 0 0;">
-    Data terbaru yang tersedia di sistem: <strong><?= htmlspecialchars(laporanFormatTanggalIndonesia($latestTanggal)) ?></strong>.
-    Template yang dipakai: <strong>Format Laporan.xlsx</strong>.
-    Gambar akan muncul di bagian Dokumentasi PDF.
-</p>
+                    <p class="subtitle" style="margin:16px 0 0;">
+                        Data terbaru yang tersedia di sistem: <strong><?= htmlspecialchars(laporanFormatTanggalIndonesia($latestTanggal)) ?></strong>.
+                        Template yang dipakai: <strong>Format Laporan.xlsx</strong> dan <strong>Format Laporan.pdf</strong>.
+                        Gambar akan muncul di bagian Dokumentasi PDF.
+                    </p>
                 </div>
             </div>
         </div>

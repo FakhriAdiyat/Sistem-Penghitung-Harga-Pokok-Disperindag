@@ -27,6 +27,7 @@ function redirect_with(string $base, string $query = ''): void {
 if ($action === 'tambah' || $action === 'add') {
     $bahan_id = (int) ($_POST['bahan_id'] ?? 0);
     $harga = (float) ($_POST['harga'] ?? 0);
+    $het_hap = (float) ($_POST['het_hap'] ?? 0);
     $tanggal = mysqli_real_escape_string($conn, $_POST['tanggal'] ?? date('Y-m-d'));
     if ($bahan_id <= 0 || $harga <= 0) {
         redirect_with($redirect, 'err=invalid');
@@ -36,12 +37,21 @@ if ($action === 'tambah' || $action === 'add') {
         VALUES ('$bahan_id', '$harga', '$tanggal')
     ");
     updateStatistikHarga($conn, $bahan_id);
+    
+    // Update HET/HAP jika disediakan
+    if ($het_hap > 0) {
+        $het_escaped = mysqli_real_escape_string($conn, $het_hap);
+        mysqli_query($conn, "
+            UPDATE bahan_pokok SET het_hap = '$het_escaped' WHERE id = '$bahan_id'
+        ");
+    }
     redirect_with($redirect, 'success=tambah');
 }
 
 if ($action === 'edit') {
     $id = (int) ($_POST['id'] ?? 0);
     $harga = (float) ($_POST['harga'] ?? 0);
+    $het_hap = (float) ($_POST['het_hap'] ?? 0);
     $tanggal = mysqli_real_escape_string($conn, $_POST['tanggal'] ?? '');
     if ($id <= 0 || $harga <= 0) {
         redirect_with($redirect, 'err=invalid');
@@ -51,9 +61,20 @@ if ($action === 'edit') {
         redirect_with($redirect, 'err=notfound');
     }
     $bahan_id = (int) $row['bahan_id'];
+    
+    // Update harga
     mysqli_query($conn, "
         UPDATE harga SET harga = '$harga', tanggal = '$tanggal' WHERE id = '$id'
     ");
+    
+    // Update HET/HAP jika ada
+    if ($het_hap > 0) {
+        $het_escaped = mysqli_real_escape_string($conn, $het_hap);
+        mysqli_query($conn, "
+            UPDATE bahan_pokok SET het_hap = '$het_escaped' WHERE id = '$bahan_id'
+        ");
+    }
+    
     updateStatistikHarga($conn, $bahan_id);
     redirect_with($redirect, 'success=edit');
 }
@@ -63,12 +84,18 @@ if ($action === 'hapus' || $action === 'delete') {
     if ($id <= 0) {
         redirect_with($redirect, 'err=invalid');
     }
-    $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT bahan_id FROM harga WHERE id = '$id'"));
+    $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT bahan_id, tanggal FROM harga WHERE id = '$id'"));
     if (!$row) {
         redirect_with($redirect, 'err=notfound');
     }
     $bahan_id = (int) $row['bahan_id'];
-    mysqli_query($conn, "DELETE FROM harga WHERE id = '$id'");
+    $tanggal = mysqli_real_escape_string($conn, $row['tanggal'] ?? '');
+    if ($tanggal === '') {
+        redirect_with($redirect, 'err=invalid');
+    }
+
+    // Hapus semua record pada komoditas dan tanggal yang sama agar sel benar-benar kosong.
+    mysqli_query($conn, "DELETE FROM harga WHERE bahan_id = '$bahan_id' AND tanggal = '$tanggal'");
     updateStatistikHarga($conn, $bahan_id);
     redirect_with($redirect, 'success=hapus');
 }

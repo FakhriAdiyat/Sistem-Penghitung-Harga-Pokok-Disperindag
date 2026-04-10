@@ -255,3 +255,53 @@ function laporanBuildTemplateRowMap(array $rows): array
 
     return $mapped;
 }
+
+function laporanTemplateGroups(): array
+{
+    static $groups = null;
+
+    if ($groups !== null) {
+        return $groups;
+    }
+
+    $groups = [];
+    $templatePath = __DIR__ . '/../assets/Format/Format Laporan.xlsx';
+    if (!is_file($templatePath) || !class_exists(\PhpOffice\PhpSpreadsheet\IOFactory::class)) {
+        return $groups;
+    }
+
+    try {
+        $sheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($templatePath)->getSheet(0);
+        $currentIndex = -1;
+
+        for ($row = 17; $row <= 103; $row++) {
+            $groupNumber = trim((string) $sheet->getCell('A' . $row)->getFormattedValue());
+            $label = trim((string) $sheet->getCell('B' . $row)->getFormattedValue());
+            $unit = trim((string) $sheet->getCell('C' . $row)->getFormattedValue());
+
+            if ($groupNumber !== '' && $label !== '') {
+                $groups[] = [
+                    'number' => $groupNumber,
+                    'title' => $label,
+                    'items' => [],
+                ];
+                $currentIndex = count($groups) - 1;
+                continue;
+            }
+
+            if ($currentIndex === -1 || $label === '') {
+                continue;
+            }
+
+            $groups[$currentIndex]['items'][] = [
+                'row' => $row,
+                'label' => $label,
+                'unit' => $unit,
+            ];
+        }
+    } catch (Throwable $e) {
+        $groups = [];
+    }
+
+    return $groups;
+}

@@ -282,10 +282,13 @@ function listPageCommodityAliases()
             'Cabai Biasa Hijau' => 'Cabai Hijau Biasa',
             'Daging Ayam Ayam Broiler' => 'Daging Ayam Broiler',
             'Daging Ayam Ayam Kampung' => 'Daging Ayam Kampung',
+            'Daging Sapi Paha Depan' => 'Daging Sapi murni Paha Depan',
+            'Daging Sapi Paha Belakang' => 'Daging Sapi murni Paha Belakang',
             'Daging Sapi Sapi murni Paha Depan' => 'Daging Sapi murni Paha Depan',
             'Daging Sapi Sapi murni Paha Belakang' => 'Daging Sapi murni Paha Belakang',
             'Daging Sapi Sapi Tetelan' => 'Daging Sapi Tetelan',
             'Daging Sapi Sapi Sirloin (Has Luar)' => 'Daging Sapi Sirloin (Has Luar)',
+            'Daging Sapi Tenderloin (Has Dalam)' => 'Daging Sapi Tanderloin (Has Dalam)',
             'Daging Sapi Sapi Tanderloin (Has Dalam)' => 'Daging Sapi Tanderloin (Has Dalam)',
             'Daging Sapi Sapi Sandung Lemur' => 'Daging Sapi Sandung Lemur',
             'Garam Beriodium Bata' => 'Garam Bata',
@@ -416,9 +419,18 @@ if ($page < 1) {
 }
 
 $importTemplateUrl = BASE_URL . 'assets/Format/' . rawurlencode('Format Import Data Bapok.xlsx');
-$bahanForImport = mysqli_query($conn, "SELECT id, nama_bahan FROM bahan_pokok ORDER BY nama_bahan ASC");
 $bahanList = mysqli_query($conn, "SELECT id, nama_bahan FROM bahan_pokok ORDER BY nama_bahan ASC");
 $bahanLookupResult = mysqli_query($conn, "SELECT id, nama_bahan, satuan, het_hap FROM bahan_pokok ORDER BY nama_bahan ASC");
+$exportYearOptions = [];
+$exportYearResult = mysqli_query($conn, "SELECT DISTINCT YEAR(tanggal) AS tahun FROM harga WHERE tanggal IS NOT NULL ORDER BY tahun DESC");
+if ($exportYearResult) {
+    while ($exportYearRow = mysqli_fetch_assoc($exportYearResult)) {
+        $yearValue = isset($exportYearRow['tahun']) ? (int) $exportYearRow['tahun'] : 0;
+        if ($yearValue > 0) {
+            $exportYearOptions[] = $yearValue;
+        }
+    }
+}
 
 $bahanLookup = [];
 if ($bahanLookupResult) {
@@ -694,11 +706,15 @@ $offset = ($page - 1) * $perPage;
 $visibleRows = array_slice($commodities, $offset, $perPage);
 $visibleCount = count($visibleRows);
 
-$exportUrl = '../process/export_process.php?' . http_build_query([
-    'start_date' => $startDateSql,
-    'end_date' => $endDateSql,
-    'search' => $keyword,
-]);
+if (empty($exportYearOptions)) {
+    $exportYearOptions[] = (int) $endDate->format('Y');
+}
+
+$selectedExportYear = (int) $endDate->format('Y');
+if (!in_array($selectedExportYear, $exportYearOptions, true)) {
+    $exportYearOptions[] = $selectedExportYear;
+    rsort($exportYearOptions, SORT_NUMERIC);
+}
 
 $paginationPages = [];
 for ($i = max(1, $page - 1); $i <= min($totalPages, $page + 1); $i++) {
@@ -795,7 +811,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 
         <button type="submit" class="list-apply-btn">Terapkan</button>
         <button type="button" id="btnImportPopup" class="list-import-btn">Import</button>
-        <a href="<?= htmlspecialchars($exportUrl) ?>" class="list-export-btn" target="_blank" rel="noopener">Export</a>
+        <button type="button" id="btnExportPopup" class="list-export-btn">Export</button>
     </form>
 </div>
 
@@ -808,7 +824,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
                     <th class="list-sticky-commodity">Komoditas</th>
                     <th class="list-sticky-metric">Data</th>
                     <?php foreach ($dateColumns as $column): ?>
-                    <th class="list-date-head" title="<?= htmlspecialchars($column['full']) ?>">
+                    <th class="list-date-head" title="<?= htmlspecialchars($column['full']) ?>" data-tanggal="<?= htmlspecialchars($column['key']) ?>">
                         <span><?= htmlspecialchars($column['label']) ?></span>
                         <small><?= htmlspecialchars($column['year']) ?></small>
                     </th>
@@ -843,6 +859,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
                             data-latest-id="<?= (int) ($latestRecord['id'] ?? 0) ?>"
                             data-latest-harga="<?= htmlspecialchars((string) ($latestRecord['harga'] ?? '')) ?>"
                             data-latest-tanggal="<?= htmlspecialchars((string) ($latestRecord['tanggal'] ?? '')) ?>"
+                            data-latest-het-hap="<?= htmlspecialchars((string) ($latestRecord['het_hap'] ?? '')) ?>"
                         >
                             <td class="list-sticky-no list-group-anchor"><?= $offset + $index + 1 ?></td>
                             <td class="list-sticky-commodity list-group-anchor">
@@ -884,8 +901,15 @@ if (session_status() === PHP_SESSION_ACTIVE) {
                                 <?php
                                     $priceCell = $commodity['prices'][$column['key']] ?? null;
                                     $priceValue = $priceCell['value'] ?? null;
+                                    $priceHetHap = $commodity['metrics'][$column['key']]['het_hap'] ?? ($commodity['het_hap'] ?? null);
                                 ?>
-                                <td class="list-metric-value harga<?= $priceValue === null ? ' is-empty' : '' ?>">
+                                <td class="list-metric-value harga<?= $priceValue === null ? ' is-empty' : '' ?>"
+                                    data-record-id="<?= $priceCell ? (int) $priceCell['id'] : '' ?>"
+                                    data-record-harga="<?= htmlspecialchars((string) ($priceValue ?? ''), ENT_QUOTES) ?>"
+                                    data-record-tanggal="<?= htmlspecialchars($column['key'], ENT_QUOTES) ?>"
+                                    data-record-het-hap="<?= htmlspecialchars((string) ($priceHetHap ?? ''), ENT_QUOTES) ?>"
+                                    data-bahan-id="<?= (int) $commodity['bahan_id'] ?>"
+                                    data-bahan-nama="<?= htmlspecialchars($commodity['nama_bahan'], ENT_QUOTES) ?>">
                                     <?= htmlspecialchars(listPageFormatRupiah($priceValue)) ?>
                                 </td>
                             <?php endforeach; ?>
@@ -978,8 +1002,39 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 </div>
 
 <div id="rowActionPopup" class="row-action-popup" aria-hidden="true">
-    <button type="button" class="row-action-btn row-action-tambah" data-action="tambah">Tambah</button>
-    <button type="button" class="row-action-btn row-action-edit" data-action="edit">Edit</button>
+    <button type="button" class="row-action-btn row-action-edit" data-action="edit">Edit Harga / HET</button>
+    <button type="button" class="row-action-btn row-action-hapus" data-action="hapus">Hapus</button>
+</div>
+
+<!-- Modal Export -->
+<div id="modalExport" class="list-modal" role="dialog" aria-hidden="true">
+  <div class="list-modal-backdrop"></div>
+  <div class="list-modal-box list-entry-modal-box">
+    <h3 class="list-entry-modal-title">Pilih Format Export</h3>
+    <p class="list-entry-modal-subtitle">Pilih tahun dan template Excel yang ingin dipakai untuk mengunduh data.</p>
+    <form method="get" action="../process/export_process.php" target="_blank" class="list-entry-modal-form" id="exportTemplateForm">
+      <input type="hidden" name="search" value="<?= htmlspecialchars($keyword) ?>">
+      <div class="form-group">
+        <label for="exportYear">Tahun</label>
+        <select name="year" id="exportYear" required>
+          <?php foreach ($exportYearOptions as $exportYear): ?>
+          <option value="<?= (int) $exportYear ?>" <?= $exportYear === $selectedExportYear ? 'selected' : '' ?>>
+            <?= (int) $exportYear ?>
+          </option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+      <div class="list-modal-actions list-entry-modal-actions" style="display:grid; gap:12px;">
+        <button type="submit" name="template_type" value="koefisien" class="btn-save list-entry-modal-submit">
+          Koefisien Variasi
+        </button>
+        <button type="submit" name="template_type" value="stabilitas" class="btn-save list-entry-modal-submit">
+          Stabilitas Harga
+        </button>
+        <button type="button" class="btn-cancel-modal list-entry-modal-cancel">Batal</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <!-- Modal Import -->
@@ -1004,21 +1059,6 @@ if (session_status() === PHP_SESSION_ACTIVE) {
           <label>Pilih File (Excel / CSV / PDF)</label>
           <input type="file" name="file_import" accept=".csv,.xlsx,.xls,.ods,.pdf" required>
           <p class="import-modal-hint">Format yang didukung: CSV, XLSX, XLS, ODS, dan PDF.</p>
-        </div>
-
-        <div class="form-group">
-          <label>Pilih Bahan (Opsional - Untuk Update HET)</label>
-          <select name="bahan_keyword">
-            <option value="">-- Tidak Update HET --</option>
-            <?php while ($bi = mysqli_fetch_assoc($bahanForImport)): ?>
-            <option value="<?= htmlspecialchars($bi['nama_bahan']) ?>"><?= htmlspecialchars($bi['nama_bahan']) ?></option>
-            <?php endwhile; ?>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Masukkan HET/HAP (Opsional)</label>
-          <input type="number" name="het_hap" step="0.01" placeholder="Masukkan HET/HAP">
         </div>
       </div>
 
@@ -1050,7 +1090,11 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             </div>
             <div class="form-group">
                 <label>Harga (Rp)</label>
-                <input type="number" name="harga" id="addHarga" min="0" step="100" required placeholder="Contoh: 14000">
+                <input type="number" name="harga" id="addHarga" min="0" step="100" required placeholder="Contoh: 15000">
+            </div>
+            <div class="form-group">
+                <label>HET/HAP (Rp) <small>Update HET bahan</small></label>
+                <input type="number" name="het_hap" id="addHetHap" min="0" step="0.01" placeholder="Contoh: 15000">
             </div>
             <div class="form-group">
                 <label>Tanggal</label>
@@ -1068,8 +1112,8 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 <div id="modalEdit" class="list-modal" role="dialog" aria-hidden="true">
     <div class="list-modal-backdrop"></div>
     <div class="list-modal-box list-entry-modal-box">
-        <h3 class="list-entry-modal-title">Edit Data Harga</h3>
-        <p class="list-entry-modal-subtitle">Perbarui data harga terakhir untuk komoditas yang dipilih.</p>
+        <h3 class="list-entry-modal-title">Edit Harga / HET</h3>
+        <p class="list-entry-modal-subtitle">Update harga dan/atau HET/HAP untuk record ini.</p>
         <form method="post" action="../process/list_process.php" class="list-entry-modal-form">
             <input type="hidden" name="action" value="edit">
             <input type="hidden" name="return_query" value="<?= htmlspecialchars($returnQuery) ?>">
@@ -1080,7 +1124,11 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             </div>
             <div class="form-group">
                 <label>Harga (Rp)</label>
-                <input type="number" name="harga" id="editHarga" min="0" step="100" required>
+                <input type="number" name="harga" id="editHarga" min="0" step="100" required placeholder="Contoh: 15000">
+            </div>
+            <div class="form-group">
+                <label>HET/HAP (Rp)</label>
+                <input type="number" name="het_hap" id="editHetHap" min="0" step="0.01" placeholder="Contoh: 14500">
             </div>
             <div class="form-group">
                 <label>Tanggal</label>
@@ -1099,5 +1147,5 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 </div>
 </div>
 
-<script src="<?= BASE_URL ?>assets/js/list.js"></script>
+<script src="<?= BASE_URL ?>assets/js/list.js?v=<?= urlencode((string) filemtime(__DIR__ . '/../assets/js/list.js')) ?>"></script>
 <?php require_once '../includes/footer.php'; ?>

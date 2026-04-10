@@ -2,134 +2,97 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Laporan TPID</title>
+    <title>Laporan Harga</title>
     <style><?= $css ?></style>
 </head>
 <body>
 
-<div class="logo-wrap">
-    <?php if (!empty($logo2Data)): ?><img src="<?= $logo2Data ?>" alt="Logo 2" class="logo-item"><?php endif; ?>
+<div class="report-header">
+    <div class="report-title">DAFTAR HARGA BARANG KEBUTUHAN POKOK</div>
+    <div class="report-subtitle">KABUPATEN KARAWANG</div>
 </div>
 
-<div class="judul">
-    <div class="judul-utama">LAPORAN PERKEMBANGAN HARGA BAHAN POKOK</div>
-    <div class="judul-sub">KABUPATEN KARAWANG</div>
-    <div class="judul-sub">TANGGAL : <?= strtoupper($tanggalUnduh) ?></div>
+<div class="report-meta">
+    <div><strong>Tanggal:</strong> <?= htmlspecialchars($tanggalLabel) ?></div>
+    <div><strong>Pasar:</strong> <?= htmlspecialchars($pasarLabel) ?></div>
 </div>
 
-<table class="summary-table">
-    <tr>
-        <th>Tanggal Kemarin</th>
-        <td><?= htmlspecialchars($tanggalKemarinLabel) ?></td>
-        <th>Tanggal Hari Ini</th>
-        <td><?= htmlspecialchars($tanggalHariIniLabel) ?></td>
-    </tr>
-    <tr>
-        <th>Total Komoditas</th>
-        <td><?= (int)($summaryRow['total_komoditas'] ?? 0) ?></td>
-        <th>Komoditas Terisi Hari Ini</th>
-        <td><?= (int)($summaryRow['komoditas_terisi'] ?? 0) ?></td>
-    </tr>
-</table>
-
-<table class="main-table">
+<table class="report-table">
     <thead>
         <tr>
-            <th rowspan="2">No</th>
-            <th rowspan="2">Komoditas</th>
-            <th rowspan="2">Satuan</th>
-            <th colspan="2">Perbandingan Harga</th>
-            <th rowspan="2">Rata-rata</th>
-            <th rowspan="2">Penyimpangan (%)</th>
-            <th rowspan="2">Fluktuasi (%)</th>
-            <th rowspan="2">Stabilitas (%)</th>
-            <th rowspan="2">HET/HAP</th>
-            <th rowspan="2">Naik/Turun (%)</th>
-            <th rowspan="2">Naik/Turun (Rp)</th>
+            <th rowspan="2" class="col-no">No</th>
+            <th rowspan="2" class="col-komoditas">Komoditas</th>
+            <th rowspan="2" class="col-satuan">Satuan</th>
+            <th rowspan="2" class="col-money">HET/HAP</th>
+            <th colspan="2">Harga</th>
+            <th colspan="2">Perubahan</th>
+            <th rowspan="2" class="col-money">Terhadap HET/HAP</th>
         </tr>
         <tr>
-            <th><?= htmlspecialchars($kolomPrev) ?></th>
-            <th><?= htmlspecialchars($kolomCurr) ?></th>
+            <th class="col-money">Kemarin</th>
+            <th class="col-money">Hari Ini</th>
+            <th class="col-money">Rp</th>
+            <th class="col-percent">Persen (%)</th>
         </tr>
     </thead>
     <tbody>
-<?php
-$no = 1;
-while ($row = mysqli_fetch_assoc($data)):
-    $pn = isset($row['persen_naik_turun']) ? (float)$row['persen_naik_turun'] : 0;
-    $rp = isset($row['naik_turun_rp']) ? (float)$row['naik_turun_rp'] : 0;
-?>
-<tr>
-    <td class="center"><?= $no++ ?></td>
-    <td><?= htmlspecialchars($row['nama_bahan']) ?></td>
-    <td class="center"><?= htmlspecialchars($row['satuan']) ?></td>
-
-    <td class="right">
-        <?= $row['harga_periode_lalu'] !== null ? number_format((float)$row['harga_periode_lalu'], 0, ',', '.') : '-' ?>
-    </td>
-
-    <td class="right">
-        <?= $row['harga_periode_ini'] !== null ? number_format((float)$row['harga_periode_ini'], 0, ',', '.') : '-' ?>
-    </td>
-
-    <td class="right">
-        <?= $row['rata_rata'] !== null ? number_format((float)$row['rata_rata'], 0, ',', '.') : '-' ?>
-    </td>
-
-    <td class="right">
-        <?= $row['persen_penyimpangan'] !== null ? number_format((float)$row['persen_penyimpangan'], 2, ',', '.') : '-' ?>
-    </td>
-
-    <td class="right">
-        <?= $row['fluktuasi_persen'] !== null ? number_format((float)$row['fluktuasi_persen'], 2, ',', '.') : '-' ?>
-    </td>
-
-    <td class="right">
-        <?= $row['stabilitas_persen'] !== null ? number_format((float)$row['stabilitas_persen'], 2, ',', '.') : '-' ?>
-    </td>
-
-    <td class="right">
-        <?= (isset($row['het_hap']) && (float)$row['het_hap'] > 0) ? number_format((float)$row['het_hap'], 0, ',', '.') : '-' ?>
-    </td>
-
-    <td class="right">
-        <?php if ($pn == 0): ?>
-            -
-        <?php else: ?>
-            <span class="<?= $pn > 0 ? 'naik' : 'turun' ?>">
-                <?= $pn > 0 ? '+' : '-' ?><?= number_format(abs($pn), 2, ',', '.') ?>
-            </span>
-        <?php endif; ?>
-    </td>
-
-    <td class="right">
-        <?php if ($rp == 0): ?>
-            -
-        <?php else: ?>
-            <span class="<?= $rp > 0 ? 'naik' : 'turun' ?>">
-                <?= $rp > 0 ? '+' : '-' ?><?= number_format(abs($rp), 0, ',', '.') ?>
-            </span>
-        <?php endif; ?>
-    </td>
-</tr>
-<?php endwhile; ?>
+        <?php foreach ($reportGroups as $group): ?>
+            <tr class="group-row">
+                <td class="center"><?= htmlspecialchars($group['number']) ?></td>
+                <td colspan="8"><?= htmlspecialchars($group['title']) ?></td>
+            </tr>
+            <?php foreach ($group['items'] as $item): ?>
+                <?php
+                    $perubahanPersen = $item['perubahan_persen'];
+                    $perubahanRp = $item['perubahan_rp'];
+                    $perubahanClass = '';
+                    if ($perubahanPersen !== null && (float) $perubahanPersen > 0) {
+                        $perubahanClass = 'naik';
+                    } elseif ($perubahanPersen !== null && (float) $perubahanPersen < 0) {
+                        $perubahanClass = 'turun';
+                    }
+                    $terhadapHetClass = '';
+                    if ($item['terhadap_het_hap'] !== null && (float) $item['terhadap_het_hap'] > 0) {
+                        $terhadapHetClass = 'naik';
+                    } elseif ($item['terhadap_het_hap'] !== null && (float) $item['terhadap_het_hap'] < 0) {
+                        $terhadapHetClass = 'turun';
+                    }
+                ?>
+                <tr>
+                    <td class="center"></td>
+                    <td class="komoditas-item"><?= htmlspecialchars($item['label']) ?></td>
+                    <td class="center"><?= htmlspecialchars($item['unit']) ?></td>
+                    <td class="right"><?= htmlspecialchars(laporanPdfFormatRupiah($item['het_hap'])) ?></td>
+                    <td class="right"><?= htmlspecialchars(laporanPdfFormatRupiah($item['harga_kemarin'])) ?></td>
+                    <td class="right"><?= htmlspecialchars(laporanPdfFormatRupiah($item['harga_hari_ini'])) ?></td>
+                    <td class="right <?= htmlspecialchars($perubahanClass) ?>"><?= htmlspecialchars(laporanPdfFormatSignedRupiah($perubahanRp)) ?></td>
+                    <td class="right <?= htmlspecialchars($perubahanClass) ?>"><?= htmlspecialchars(laporanPdfFormatPersen($perubahanPersen, true)) ?></td>
+                    <td class="right <?= htmlspecialchars($terhadapHetClass) ?>"><?= htmlspecialchars(laporanPdfFormatSignedRupiah($item['terhadap_het_hap'])) ?></td>
+                </tr>
+            <?php endforeach; ?>
+        <?php endforeach; ?>
     </tbody>
 </table>
 
+<div class="report-note">
+    <strong>Pembanding kemarin:</strong> <?= htmlspecialchars($tanggalKemarinLabel) ?>
+</div>
+
 <div class="dokumentasi-section">
-    <div class="dokumentasi-title">Dokumentasi Kunjungan</div>
-    <?php if (isset($dokumentasiImages) && is_array($dokumentasiImages)): ?>
+    <div class="dokumentasi-title">DOKUMENTASI KUNJUNGAN</div>
+    <?php if (!empty($dokumentasiImages)): ?>
         <div class="dokumentasi-images">
-            <?php foreach ($dokumentasiImages as $imgPath): 
-                $imgData = image_data_uri(__DIR__ . '/../' . $imgPath);
-                if ($imgData): ?>
+            <?php foreach ($dokumentasiImages as $imgPath): ?>
+                <?php $imgData = laporanPdfImageDataUri(__DIR__ . '/../' . $imgPath); ?>
+                <?php if ($imgData !== ''): ?>
                     <img src="<?= $imgData ?>" alt="Dokumentasi" class="dok-image">
                 <?php endif; ?>
             <?php endforeach; ?>
         </div>
+    <?php else: ?>
+        <div class="dokumentasi-empty">Belum ada gambar dokumentasi.</div>
     <?php endif; ?>
 </div>
 
 </body>
-
 </html>
